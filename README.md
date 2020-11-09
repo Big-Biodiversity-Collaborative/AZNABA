@@ -4,6 +4,8 @@ Code and data for "Fewer butterflies seen by community scientists across the war
 
 This directory contains data and code to reproduce analyses and figures from the main text and supplemental material. Code files are named in numerical sequence (e.g., 1_dataPrep1.R), and should be executed in the indicated order. However, all input and output files are already included, such that one can jump into the order at any point in the sequence and recreate analyses and figures.
 
+Questions about analyses and data should be directed to <a href="mailto:forister@gmail.com?subject=Butterfly%20Declines%20Inquiry">Matthew Forister</a>
+
 ## Required libraries
 
 + [adegraphics](https://cran.r-project.org/web/packages/adegraphics/index.html)
@@ -25,4 +27,3 @@ This directory contains data and code to reproduce analyses and figures from the
 + [VennDiagram](https://cran.r-project.org/web/packages/VennDiagram/index.html)
 
 
-[Jeff, it’d be great to get in here some language to the effect that all of these datasets come from different sources and authors, and we’d appreciate folks that are interested in the data getting in touch with us. You can also say that any questions about code or analyses can be directed at me.]
