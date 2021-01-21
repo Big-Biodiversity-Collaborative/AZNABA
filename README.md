@@ -6,6 +6,8 @@ This directory contains data and code to reproduce analyses and figures from the
 
 Questions about analyses and data should be directed to <a href="mailto:forister@gmail.com?subject=Butterfly%20Declines%20Inquiry">Matthew Forister</a>
 
+Latest archive is available on Zenodo at [![DOI](https://zenodo.org/badge/310722801.svg)](https://zenodo.org/badge/latestdoi/310722801)
+
 ## Required libraries
 
 + [adegraphics](https://cran.r-project.org/web/packages/adegraphics/index.html)
