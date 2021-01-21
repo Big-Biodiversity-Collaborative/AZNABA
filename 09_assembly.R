@@ -199,7 +199,7 @@ body$size <- (body$lower + body$upper) / 2
 head(body)
 
 ## Get Taxonomic key and implement name changes.
-key <- read.csv("OplerToFourthKey.csv")
+key <- read.csv("wingspanToNABAKey.csv")
 body$sp <- gsr(body$name,as.vector(key$sp),as.vector(key$newNameForOpler))
 head(body)
 

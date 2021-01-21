@@ -137,7 +137,7 @@ map("state",region=c("california","nevada","utah","oregon","idaho","wyoming",
 dat <- read.csv("inat_elevs.csv")
 head(dat);dim(dat)
 
-#### gotta filter those suckers to be 2005 and after
+#### gotta filter those records to be 2005 and after
 ## bring in record dates 
 tempDat <- read.csv("butterfly_occ_export.csv")
 head(tempDat);dim(tempDat)

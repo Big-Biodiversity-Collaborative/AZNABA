@@ -136,7 +136,7 @@ points(new2[,1],new2[,2],pch=1,col="gray25",cex=1)
 
 
 
-################ Art
+################ Shapiro
 
 par(mar=c(0,0,0,0))
 
@@ -304,7 +304,7 @@ points(new2[,1],new2[,2],pch=1,col="gray25",cex=1)
 
 
 
-################ Art
+################ Shapiro
 
 par(mar=c(0,0,0,0))
 
@@ -471,7 +471,7 @@ points(new2[,1],new2[,2],pch=1,col="gray25",cex=1)
 
 
 
-################ Art
+################ Shapiro
 
 par(mar=c(0,0,0,0))
 
@@ -643,7 +643,7 @@ points(new2[,1],new2[,2],pch=1,col="gray25",cex=1)
 
 
 
-################ Art
+################ Shapiro
 
 par(mar=c(0,0,0,0))
 

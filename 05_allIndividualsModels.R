@@ -148,7 +148,7 @@ dateSites<-data.frame()
 
 
 ######
-###### QUESTION: what is the scaling of each species that's happening below?
+######
 ######
 
 

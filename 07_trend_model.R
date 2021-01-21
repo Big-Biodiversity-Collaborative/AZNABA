@@ -1,5 +1,3 @@
-#Chris Halsch
-#September 29 2020
 #Bayesian trends analysis
 
 library(tidyverse)
