@@ -22,6 +22,31 @@ helen_obs <- helen_obs %>%
 helen_obs <- helen_obs %>%
   filter(str_count(string = LatinName, pattern = " ") > 0)
 
+# Make vector of SourceNames
+source_names <- unique(c(matt_obs$LatinName, helen_obs$LatinName))
+
+# Make dataframe with AcceptedNames
+accepted_table <- data.frame(SourceName = source_names,
+                             AcceptedName = NA)
+parsed_name_list <- str_split(string = accepted_table$SourceName, pattern = " ")
+genus_name <- lapply(X = parsed_name_list, FUN = "[[", 1)
+species_name <- lapply(X = parsed_name_list, FUN = "[[", 2)
+binomial_name <- paste(genus_name, species_name)
+
+accepted_table %>%
+  mutate(AcceptedName = binomial_name) %>%
+  arrange(AcceptedName)
+
+
+
+
+
+
+
+
+##### 
+# Old code below here
+
 # Make table of LatinNames comparing Matt and Helen
 latin_table <- matt_obs %>%
   select(LatinName) %>%
@@ -41,15 +66,6 @@ different_sites <- c(setdiff(x = matt_sites, y = helen_sites),
                      setdiff(x = helen_sites, y = matt_sites))
 different_sites
 
-# Drop columns not in common except EnglishNames
-
-# Create taxonomy of EnglishNames to LatinNames
-
-# Add EnglishNames to Matt data
-
-# Combine Matt and Helen datasets
-
-# Remove duplicates (LatinName, Site, Date, Latitude, Longitude)
 
 
 
