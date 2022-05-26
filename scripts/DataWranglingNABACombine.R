@@ -17,6 +17,12 @@ matt_obs <- matt_obs %>%
 helen_obs <- helen_obs %>%
   filter(!is.na(LatinName))
 
+#Convert date to Date
+matt_obs <- matt_obs %>%
+  mutate(Date = as.Date(Date, format = "%m/%d/%Y"))
+helen_obs <- helen_obs %>%
+  mutate(Date = as.Date(Date, format = "%m/%d/%Y"))
+
 # Drop rows not identified to species or subspecies 
 # Rows with one word in LatinName
 helen_obs <- helen_obs %>%
@@ -28,18 +34,36 @@ source_names <- unique(c(matt_obs$LatinName, helen_obs$LatinName))
 # Make dataframe with AcceptedNames
 accepted_table <- data.frame(SourceName = source_names,
                              AcceptedName = NA)
-parsed_name_list <- str_split(string = accepted_table$SourceName, pattern = " ")
-genus_name <- lapply(X = parsed_name_list, FUN = "[[", 1)
-species_name <- lapply(X = parsed_name_list, FUN = "[[", 2)
-binomial_name <- paste(genus_name, species_name)
-
-accepted_table %>%
-  mutate(AcceptedName = binomial_name) %>%
+accepted_table %>% 
+  separate(col = SourceName, 
+           into = c("GenusName", "SpeciesName"),
+           sep = " ",
+           remove = FALSE, 
+           extra = "drop") %>%
+  mutate(AcceptedName = paste(GenusName, SpeciesName)) %>%
+  select(-c(GenusName, SpeciesName)) %>%
   arrange(AcceptedName)
 
+#Pull out unique latitude and longitude data
+#Combine lat and long from 2 data sets
+lat_long <- matt_obs %>%
+  select(Latitude, Longitude, Site) %>%
+  bind_rows(helen_obs %>% select(Latitude, Longitude, Site)) %>%
+  distinct() 
+lat_long
+write_csv(x=lat_long, file = "output/Lat-Long-Site.csv")
 
-
-
+#Identify year range
+obs_date <- matt_obs %>%
+  select(Date) %>%
+  mutate(Source = "matt") %>%
+  bind_rows(helen_obs %>% select(Date) %>% mutate(Source = "helen")) %>%
+  mutate(Year = year(Date)) %>%
+  select(-Date) %>%
+  group_by(Source) %>%
+  summarize(MinYear = min(Year), 
+            MaxYear = max(Year))
+obs_date
 
 
 
