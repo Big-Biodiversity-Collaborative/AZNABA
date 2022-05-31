@@ -17,11 +17,21 @@ matt_obs <- matt_obs %>%
 helen_obs <- helen_obs %>%
   filter(!is.na(LatinName))
 
-#Convert date to Date
+# Convert date to Date
 matt_obs <- matt_obs %>%
   mutate(Date = as.Date(Date, format = "%m/%d/%Y"))
 helen_obs <- helen_obs %>%
   mutate(Date = as.Date(Date, format = "%m/%d/%Y"))
+
+# Convert Date to Year, Month, Day columns
+matt_obs <- matt_obs %>%
+  mutate(Year = year(Date), 
+         Month = month(Date),
+         Day = day(Date))
+helen_obs <- helen_obs %>%
+  mutate(Year = year(Date), 
+         Month = month(Date),
+         Day = day(Date))
 
 # Drop rows not identified to species or subspecies 
 # Rows with one word in LatinName
@@ -34,7 +44,7 @@ source_names <- unique(c(matt_obs$LatinName, helen_obs$LatinName))
 # Make dataframe with AcceptedNames
 accepted_table <- data.frame(SourceName = source_names,
                              AcceptedName = NA)
-accepted_table %>% 
+accepted_table <- accepted_table %>% 
   separate(col = SourceName, 
            into = c("GenusName", "SpeciesName"),
            sep = " ",
@@ -44,51 +54,35 @@ accepted_table %>%
   select(-c(GenusName, SpeciesName)) %>%
   arrange(AcceptedName)
 
+# Join AcceptedName to both Matt and Helen data
+matt_obs <- matt_obs %>%
+  left_join(accepted_table, by = c("LatinName" = "SourceName")) %>%
+  mutate(DataSource = "Matt")
+helen_obs <- helen_obs %>%
+  left_join(accepted_table, by = c("LatinName" = "SourceName")) %>%
+  mutate(DataSource = "Helen")
+
 #Pull out unique latitude and longitude data
 #Combine lat and long from 2 data sets
 lat_long <- matt_obs %>%
   select(Latitude, Longitude, Site) %>%
   bind_rows(helen_obs %>% select(Latitude, Longitude, Site)) %>%
   distinct() 
-lat_long
-write_csv(x=lat_long, file = "output/Lat-Long-Site.csv")
 
-#Identify year range
-obs_date <- matt_obs %>%
-  select(Date) %>%
-  mutate(Source = "matt") %>%
-  bind_rows(helen_obs %>% select(Date) %>% mutate(Source = "helen")) %>%
-  mutate(Year = year(Date)) %>%
-  select(-Date) %>%
-  group_by(Source) %>%
-  summarize(MinYear = min(Year), 
-            MaxYear = max(Year))
-obs_date
+# Write site latitude and longitude combined data to file
+write_csv(x=lat_long, file = "data/lat-long-site.csv")
+
+# Remove columns
+az_naba <- matt_obs %>%
+  select(Year, Month, Day, DataSource, Site, AcceptedName, ButterflyCount) %>%
+  bind_rows(helen_obs %>% select(Year, Month, Day, DataSource, Site, 
+                                 AcceptedName, ButterflyCount))
+  
+# Write to file
+write_csv(x = az_naba, file = "data/all-sites-bflies.csv")
 
 
 
-
-##### 
-# Old code below here
-
-# Make table of LatinNames comparing Matt and Helen
-latin_table <- matt_obs %>%
-  select(LatinName) %>%
-  distinct() %>% 
-  full_join(helen_obs %>% select(LatinName, EnglishName) %>% distinct(), 
-             copy = TRUE,
-             suffix = c("_Matt", "_Helen"),
-             keep = TRUE)
-
-# Output LatinNames to file
-write_csv(x = latin_table, file = "data/LatinNameList.csv")
-
-# Compare Sites to find potential differences
-matt_sites <- unique(matt_obs$Site)
-helen_sites <- unique(helen_obs$Site)
-different_sites <- c(setdiff(x = matt_sites, y = helen_sites), 
-                     setdiff(x = helen_sites, y = matt_sites))
-different_sites
 
 
 
