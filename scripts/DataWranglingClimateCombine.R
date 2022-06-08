@@ -6,6 +6,7 @@
 # Load additional packages
 library(tidyverse)
 library(lubridate)
+#Let's do this!!!
 
 # Load latitude and longitude site name data
 lat_long_site <- read_csv(file = "output/Lat-Long-Site.csv") 
