@@ -10,16 +10,6 @@ library(tidyverse)
 all_sites_bflies <- read_csv("data/all-sites-bflies.csv")
 all_sites_climate <- read_csv("data/all-sites-climate.csv")
 
-#View data- remove if not desired
-View(all_sites_climate)
-View(all_sites_bflies)
-
-<<<<<<< HEAD
-#TO DO - Merge files
-x=2
-
-#Brad Trial Comment 
-=======
 #Create temperature lag variables
 #Data must be in time order (otherwise add arrange statement)
 climate_lag <- all_sites_climate %>%                            
@@ -36,13 +26,19 @@ View(climate_lag)
 #Spring = March, April, May
 #Monsoon June July August 
 
-count_bflies<- all_sites_bflies %>% arrange(Site, Year, Month, Day) 
+
+#The observations are off by 1 observation??  11572 distinct and 11573 in Helen. 
+#Need to investigate and fix. 
+
+count_bflies<- all_sites_bflies %>% arrange(Site, Year, Month, Day, AcceptedName)  %>%
+ filter(DataSource=="Helen")
+
+View(count_bflies)
 
 
-#Pull out unique latitude and longitude data
-#Combine lat and long from 2 data sets
-lat_long <- matt_obs %>%
-  select(Latitude, Longitude, Site) %>%
-  bind_rows(helen_obs %>% select(Latitude, Longitude, Site)) %>%
+#Pull out unique counts ??Hours Observed not in helen
+distinct_bflies <- count_bflies %>%
+  select(Year, Month, Day, Site, AcceptedName, ButterflyCount) %>%
   distinct() 
->>>>>>> 8ff2d6f8faac7377f7f255ee8e83b09820358b22
+
+View(distinct_bflies)
