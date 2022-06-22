@@ -10,12 +10,14 @@ library(lubridate)
 # Load data 
 matt_obs <- read_csv(file = "data/NABA-AZ-Matt.csv")
 helen_obs <- read_csv(file = "data/NABA-AZ-Helen.csv")
+#Bradly add here helenPost2018_obs <- 
 
 # Drop data with no LatinName information
 matt_obs <- matt_obs %>%
   filter(!is.na(LatinName))
 helen_obs <- helen_obs %>%
   filter(!is.na(LatinName))
+
 
 # Convert date to Date
 matt_obs <- matt_obs %>%
@@ -74,13 +76,12 @@ write_csv(x=lat_long, file = "data/lat-long-site.csv")
 
 # Remove columns
 az_naba <- matt_obs %>%
-  select(Year, Month, Day, DataSource, Site, AcceptedName, ButterflyCount) %>%
+  select(Year, Month, Day, DataSource, Site, AcceptedName, ButterflyCount, HoursObserved) %>%
   bind_rows(helen_obs %>% select(Year, Month, Day, DataSource, Site, 
                                  AcceptedName, ButterflyCount))
   
 # Write to file
 write_csv(x = az_naba, file = "data/all-sites-bflies.csv")
-
 
 
 
