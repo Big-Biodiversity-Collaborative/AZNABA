@@ -74,7 +74,7 @@ lat_long <- matt_obs %>%
 # Write site latitude and longitude combined data to file
 write_csv(x=lat_long, file = "data/lat-long-site.csv")
 
-# Remove columns
+# Remove columns 
 az_naba <- matt_obs %>%
   select(Year, Month, Day, DataSource, Site, AcceptedName, ButterflyCount, HoursObserved) %>%
   bind_rows(helen_obs %>% select(Year, Month, Day, DataSource, Site, 
