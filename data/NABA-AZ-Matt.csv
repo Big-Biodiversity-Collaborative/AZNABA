@@ -1,4 +1,4 @@
-LatinName,Site,Date,State,Latitude,Longitude,ButterflyCount,HoursObserved,JulianDate
+LatinName,Site,Date,State,Latitude,Longitude,ButterflyCount,PartyHours,JulianDate
 Achalarus casica,AtascosaHighlandsAZ,7/19/1980,AZ,31.48,-111.16,1,26,201
 Achalarus casica,AtascosaHighlandsAZ,6/20/1982,AZ,31.48,-111.16,1,19,171
 Achalarus casica,AtascosaHighlandsAZ,7/30/1983,AZ,31.48,-111.16,4,26,211
