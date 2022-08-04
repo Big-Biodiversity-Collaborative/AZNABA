@@ -7,8 +7,12 @@
 library(tidyverse)
 
 # Load data 
-all_sites_bflies <- read_csv("data/all-sites-bflies.csv")
+all_sites_bflies <- read_csv("data/all-sites-bflies14-21Helen.csv")
 all_sites_climate <- read_csv("data/all-sites-climate.csv")
+
+View(all_sites_bflies) 
+View(all_sites_climate)
+
 
 #Create temperature lag variables
 #Data must be in time order (otherwise add arrange statement)
