@@ -15,6 +15,17 @@ matt$NABAEnglishName <- gsub("^'|'$", "", matt$NABAEnglishName)
 helen <- read_csv(file = "data/NABA_Rowe.csv")
 helen$NABAEnglishName <- gsub("^'|'$", "", helen$NABAEnglishName)
 
+
+#Renaming site names in Helen's file to be consistent with Matt and lat long files
+helen$Site[helen$Site=="McDowell Sonoran Preserve"]<-"McDowellSonoranPreserve"
+helen$Site[helen$Site=="Grand Canyon North Rim"]<-"GrandCanyonNorthRim"
+helen$Site[helen$Site=="Patagonia"]<-"PatagoniaAZ"
+helen$Site[helen$Site=="Portal"]<-"PortalAZ"
+helen$Site[helen$Site=="Ramsey Canyon"]<-"RamseyCanyonAZ"
+helen$Site[helen$Site=="Sabino Canyon"]<-"SabinoCanyonAZ"
+helen$Site[helen$Site=="Santa Rita Mountains"]<-"SantaRitaMountains"
+
+
 # Rename variables for consistent naming
 matt <- matt%>%
   rename(PartyHours=Party_Hours) 
@@ -30,4 +41,20 @@ Az_naba_all <- az_naba %>%
 #BRADLY: Add lat/long to Az_naba_all
 #Check the names in Helen's file ' 
 #??Urbanization get file from Helen
+
+
+#Adding Lat/Long to the az_naba_all file
+az_naba_lat_long <- left_join(Az_naba_all, lat_long_site, by ="Site")
+
+#Adding climate data to the az_naba_lat_long
+climate_az_naba <- left_join(az_naba_lat_long, all_sites_climate, by=c("Year"="year", "Month"="month", "Site"="site"))
+
+#removing the duplicate lat/long from the climate file
+climate_az_naba = select(climate_az_naba, -latitude,-longitude)
+
+
+
+
+
+
 
