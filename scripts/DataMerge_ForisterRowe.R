@@ -14,7 +14,7 @@ matt$NABAEnglishName <- gsub("^'|'$", "", matt$NABAEnglishName)
 
 helen <- read_csv(file = "data/NABA_Rowe.csv")
 helen$NABAEnglishName <- gsub("^'|'$", "", helen$NABAEnglishName)
-
+helen$NABAEnglishName <- gsub("[\x82\x91\x92]", "'", helen$NABAEnglishName)
 
 #Renaming site names in Helen's file to be consistent with Matt and lat long files
 helen$Site[helen$Site=="McDowell Sonoran Preserve"]<-"McDowellSonoranPreserve"
