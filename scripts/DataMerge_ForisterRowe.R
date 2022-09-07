@@ -42,6 +42,9 @@ Az_naba_all <- az_naba %>%
 #Check the names in Helen's file ' 
 #??Urbanization get file from Helen
 
+#Importing in the climate and lat/long data files
+lat_long_site <- read_csv(file = "data/lat-long-site.csv")
+all_sites_climate <- read_csv("data/all-sites-climate.csv")
 
 #Adding Lat/Long to the az_naba_all file
 az_naba_lat_long <- left_join(Az_naba_all, lat_long_site, by ="Site")
