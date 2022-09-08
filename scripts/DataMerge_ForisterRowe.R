@@ -55,8 +55,29 @@ climate_az_naba <- left_join(az_naba_lat_long, all_sites_climate, by=c("Year"="y
 #removing the duplicate lat/long from the climate file
 climate_az_naba = select(climate_az_naba, -latitude,-longitude)
 
+#Creating a data file with Total unique butterfly species for each outing 
+Total_butterfly2 <- Az_naba_all %>% 
+  select(Year, Month, Day, Site, NABAEnglishName) %>% 
+  group_by(Year, Month, Day, Site) %>% 
+  summarize(Unique_butterflies = n_distinct(NABAEnglishName)) %>% 
+  summarize(total_butterly_count = sum(ButterflyCount))
 
+#Creating a data file with Total butterfly count for each outing 
+Total_butterfly <- Az_naba_all %>% 
+  select(Year, Month, Day, Site, ButterflyCount) %>% 
+  group_by(Year, Month, Day, Site) %>% 
+  summarize(total_butterly_count = sum(ButterflyCount)) 
 
+#merging the two files with species count and total number of butterflies
+Butterfly_summary <- left_join(Total_butterfly, Total_butterfly2, by=c("Year"="Year", "Month"="Month","Day"="Day", "Site"="Site"))
+
+#Creating a climate lag 
+climate_lag <- all_sites_climate %>% 
+  group_by(site) %>% 
+  dplyr::mutate(tmean_previous = dplyr::lag(tmean, n = 1, default = NA))
+
+#combining the Climate lag df with the butterfly_summary df
+Butterfly_summary_lag <- left_join(Butterfly_summary, climate_lag, by=c("Year"="year", "Month"="month", "Site"="site"))
 
 
 

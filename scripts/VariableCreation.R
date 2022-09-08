@@ -77,4 +77,4 @@ climatelagBJ <- all_sites_climate %>%
 Total_Count_Temp <- left_join(NABA_Rowe_Total_Count, climatelagBJ, by=c("Year"="year", "Month"="month", "Site"="site"))
 
 Count_Tmean <- Total_Count_Temp %>% 
-  select(Year, Month, Day, Site, total_butterly_count, tmean, tmean_previous)
+  select(Year, Month, Day, Site, total_butterly_count, tmean, tmean_previous) 
