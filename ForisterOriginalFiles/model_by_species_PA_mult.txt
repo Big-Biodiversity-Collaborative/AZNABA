@@ -1,0 +1,21 @@
+model{
+        # binomial likelihood
+		# and logit link function for glm
+		for(i in 1:N) {
+		pres[i] ~ dbin(p[i], visits[i])
+		logit(p[i]) <- int[sites[i]] + beta[sites[i]] * year[i]
+		}     
+
+		#Coef for species nested in sites
+		for (j in 1:Nsite) {
+		beta[j] ~ dnorm(hbmu, hbsig)
+		int[j] ~ dnorm(himu, hisig)   
+		}	
+
+		# uninformative hyperpriors
+		hbmu ~ dnorm(0, 1)
+		hbsig ~ dgamma(0.1,0.1)
+		himu ~ dnorm(0, 1)
+		hisig ~ dgamma(0.1,0.1)
+		}	
+		
