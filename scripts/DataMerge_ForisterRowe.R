@@ -78,25 +78,15 @@ climate_lag <- all_sites_climate %>%
 #combining the Climate lag df with the butterfly_summary df
 Butterfly_summary_lag <- left_join(Butterfly_summary, climate_lag, by=c("Year"="year", "Month"="month", "Site"="site"))
 
-#Creating a new daily weather file following Dr. Prudic's code
-daily_weather<- list.files(path = "data/Climate-Data/DAILY", pattern = ".csv", full.names = TRUE) %>% 
-  lapply(read_csv) %>% 
-  bind_rows()
+#Creating a new daily weather file 
+daily_weather <- NULL
+read_daily<- 
+  function(path, pattern = "*.csv") {
+list.files(path = "data/Climate-Data/DAILY", pattern = ".csv", full.names = TRUE) %>% 
+      map_df(~read.csv(., skip=10))
+      }
 
-library(tidyverse)
-library(dplyr)
-weather <- ldply(list.files(), read.csv, header=TRUE)
-view(weather)
-
-PRISM_ppt_tmin_tmean_tmax_tdmean_vpdmin_vpdmax_stable_4km_19810101_19811231<- PRISM_ppt_tmin_tmean_tmax_tdmean_vpdmin_vpdmax_stable_4km_19810101_19811231[-c(1,2,3,4,5,6,7,8),]
-
-
-
-
-
-
-
-
+daily_weather <- read_daily('./data/Climate-Data/DAILY')
 
 
 
