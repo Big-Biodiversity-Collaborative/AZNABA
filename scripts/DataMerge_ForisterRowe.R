@@ -59,8 +59,7 @@ climate_az_naba = select(climate_az_naba, -latitude,-longitude)
 Total_butterfly2 <- Az_naba_all %>% 
   select(Year, Month, Day, Site, NABAEnglishName) %>% 
   group_by(Year, Month, Day, Site) %>% 
-  summarize(Unique_butterflies = n_distinct(NABAEnglishName)) %>% 
-  summarize(total_butterly_count = sum(ButterflyCount))
+  summarize(Unique_butterflies = n_distinct(NABAEnglishName))
 
 #Creating a data file with Total butterfly count for each outing 
 Total_butterfly <- Az_naba_all %>% 
@@ -78,6 +77,28 @@ climate_lag <- all_sites_climate %>%
 
 #combining the Climate lag df with the butterfly_summary df
 Butterfly_summary_lag <- left_join(Butterfly_summary, climate_lag, by=c("Year"="year", "Month"="month", "Site"="site"))
+
+#Creating a new daily weather file following Dr. Prudic's code
+daily_weather<- list.files(path = "data/Climate-Data/DAILY", pattern = ".csv", full.names = TRUE) %>% 
+  lapply(read_csv) %>% 
+  bind_rows()
+
+library(tidyverse)
+library(dplyr)
+weather <- ldply(list.files(), read.csv, header=TRUE)
+view(weather)
+
+PRISM_ppt_tmin_tmean_tmax_tdmean_vpdmin_vpdmax_stable_4km_19810101_19811231<- PRISM_ppt_tmin_tmean_tmax_tdmean_vpdmin_vpdmax_stable_4km_19810101_19811231[-c(1,2,3,4,5,6,7,8),]
+
+
+
+
+
+
+
+
+
+
 
 
 
