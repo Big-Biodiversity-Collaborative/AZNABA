@@ -7,6 +7,7 @@
 # Load additional packages
 library(tidyverse)
 library(lubridate)
+library(dplyr)
 
 # Load data and Corrects data read error with '
 matt <- read_csv(file = "data/NABA_Forister.csv")
@@ -49,6 +50,10 @@ all_sites_climate <- read_csv("data/all-sites-climate.csv")
 #Adding Lat/Long to the az_naba_all file
 az_naba_lat_long <- left_join(Az_naba_all, lat_long_site, by ="Site")
 
+#Creating a csv for the NABA data with the lat longs added
+write_csv(x = az_naba_lat_long, 
+          file = "data/AZNABA_lat_long.csv")
+
 #Adding climate data to the az_naba_lat_long
 climate_az_naba <- left_join(az_naba_lat_long, all_sites_climate, by=c("Year"="year", "Month"="month", "Site"="site"))
 
@@ -70,6 +75,10 @@ Total_butterfly <- Az_naba_all %>%
 #merging the two files with species count and total number of butterflies
 Butterfly_summary <- left_join(Total_butterfly, Total_butterfly2, by=c("Year"="Year", "Month"="Month","Day"="Day", "Site"="Site"))
 
+#Creating a csv with the butterfly richness and abundance for each outing
+write_csv(x = Butterfly_summary, 
+          file = "data/Butterfly_summary.csv")
+
 #Creating a climate lag 
 climate_lag <- all_sites_climate %>% 
   group_by(site) %>% 
@@ -88,7 +97,34 @@ list.files(path = "data/Climate-Data/DAILY", pattern = ".csv", full.names = TRUE
 
 daily_weather <- read_daily('./data/Climate-Data/DAILY')
 
+#Separating the date into year, month, day format
+daily_weather <- daily_weather %>%
+  mutate(year = as.integer(substr(x = Date, start = 1, stop = 4)),
+         month = as.integer(substr(x = Date, start = 6, stop = 7)),
+         day = as.integer(substr(x = Date, start = 9, stop = 10))) %>%
+  select(-Date)
 
+#Moving the date to the front of the data frame 
+daily_weather <- daily_weather %>%
+  relocate(year, month, day, Name, Latitude, Longitude, Elevation..m., ppt..mm.,tmin..degrees.C.,
+           tmean..degrees.C.,tmax..degrees.C.,tdmean..degrees.C.,vpdmin..hPa.,vpdmax..hPa.)
+
+#Renaming column names
+daily_weather <- daily_weather %>% 
+  rename(Elevation  = 'Elevation..m.',
+         Precip = 'ppt..mm.',
+         tmin = 'tmin..degrees.C.',
+         tmean ='tmean..degrees.C.',
+         tmax = 'tmax..degrees.C.',
+         tdmean ='tdmean..degrees.C.',
+         vpdmin ='vpdmin..hPa.',
+         vpdmax ='vpdmax..hPa.',
+         Site = 'Name'
+  )
+
+#Creating a csv file for the daily weather data frame 
+write_csv(x = daily_weather, 
+          file = "data/daily_weather.csv")
 
 
 
