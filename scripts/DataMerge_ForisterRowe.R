@@ -151,7 +151,7 @@ Butterly_daily_weather <- full_join(daily_weather, Butterfly_summary,
                                 by =c("year"="Year", "month"="Month", "day"="Day", "Site"="Site"))
 
 #adding the previous 90 and 365 day high/low/mean temp, and adding sum of the last 90/365 day precipitation 
-Butterly_lag<- Butterly_daily_weather %>% 
+Final_Butterly<- Butterly_daily_weather %>% 
   group_by(Site) %>% 
   arrange(Site) %>%
   mutate(tmean_previous90=rollmean(tmean,90, na.pad = TRUE, align = "right")) %>% 
@@ -163,9 +163,37 @@ Butterly_lag<- Butterly_daily_weather %>%
   mutate(PrecipSum_previous90=rollsum(Precip,90, na.pad = TRUE, align = "right")) %>% 
   mutate(PrecipSum_previous365=rollsum(Precip,365, na.pad = TRUE, align = "right"))
   
+#Creating winter precip data
+winter_precip <- Final_Butterly %>% 
+  select(year, month, day, Site, Precip) %>% 
+  group_by(Site, year, month) %>% 
+  summarise(monthly_precip = sum(Precip))
+
+#deleting months that are not in winter season
+winter_precip<- subset(winter_precip, month!="1" & month!="2" & month!="3" & month!="11" & month!="12")
+
+#Creating monsoon data
+monsoon_precip <- Final_Butterly %>% 
+  select(year, month, day, Site, Precip) %>% 
+  group_by(Site, year, month) %>% 
+  summarise(monthly_precip = sum(Precip))
+
+#Deleting months that are not in monsoon season
+monsoon_precip<- subset(monsoon_precip, month!="1" & month!="2" & month!="3" & month!="4" & month!="5" & 
+                          month!="6" & month!="10" & month!="11" & month!="12" )
+
+#Adding the monsoon season months up for the year/site
+monsoon_precip <- monsoon_precip %>% 
+  select(Site, year, monthly_precip) %>% 
+  group_by(Site, year) %>% 
+  summarise(Monsoon_total_precip = sum(monthly_precip))
+
+#Creating the previous year monsoon precip
+monsoon_precip<- monsoon_precip %>% 
+  dplyr::mutate(previous_monsoon = dplyr::lag(Monsoon_total_precip, n = 1, default = NA))
 
 
 #Removing all of the rows that do not contain a butterfly count
-Butterly_lag %>% drop_na(Unique_butterflies)
+Final_Butterly %>% drop_na(Unique_butterflies)
 
 
