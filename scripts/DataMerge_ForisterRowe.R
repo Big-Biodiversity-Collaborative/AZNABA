@@ -172,6 +172,11 @@ winter_precip <- Final_Butterly %>%
 #deleting months that are not in winter season
 winter_precip<- subset(winter_precip, month!="1" & month!="2" & month!="3" & month!="11" & month!="12")
 
+#combining the winter months into a season
+winter_precip<- winter_precip %>% 
+  mutate(PrecipSum_previous7=rollsum(monthly_precip,7, na.pad = TRUE, align = "right"))
+  
+
 #Creating monsoon data
 monsoon_precip <- Final_Butterly %>% 
   select(year, month, day, Site, Precip) %>% 
