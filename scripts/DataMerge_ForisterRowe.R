@@ -8,6 +8,7 @@
 library(tidyverse)
 library(lubridate)
 library(dplyr)
+library(zoo)
 
 # Load data and Corrects data read error with '
 matt <- read_csv(file = "data/NABA_Forister.csv")
@@ -122,10 +123,49 @@ daily_weather <- daily_weather %>%
          Site = 'Name'
   )
 
+#Renaming the sites to match with the butterfly data site names
+daily_weather$Site[daily_weather$Site=="AtascosaHigh"]<-"AtascosaHighlandsAZ"
+daily_weather$Site[daily_weather$Site=="RamseyCanyon"]<-"RamseyCanyonAZ"
+daily_weather$Site[daily_weather$Site=="SabinoCanyon"]<-"SabinoCanyonAZ"
+daily_weather$Site[daily_weather$Site=="SantaRitaMou"]<-"SantaRitaMountains"
+daily_weather$Site[daily_weather$Site=="SycamoreCree"]<-"SycamoreCreekAZ"
+daily_weather$Site[daily_weather$Site=="BoyceThompso"]<-"BoyceThompsonArboretum"
+daily_weather$Site[daily_weather$Site=="GrandCanyonD"]<-"GrandCanyonDesertView"
+daily_weather$Site[daily_weather$Site=="GrandCanyonS"]<-"GrandCanyonSouthRim"
+daily_weather$Site[daily_weather$Site=="GuadalupeCan"]<-"GuadalupeCanyonAZNM"
+daily_weather$Site[daily_weather$Site=="Springervill"]<-"SpringervilleAZ"
+daily_weather$Site[daily_weather$Site=="McDowellSono"]<-"McDowellSonoranPreserve"
+daily_weather$Site[daily_weather$Site=="GrandCanyonN"]<-"GrandCanyonNorthRim"
+
 #Creating a csv file for the daily weather data frame 
 write_csv(x = daily_weather, 
           file = "data/daily_weather.csv")
 
 
+#Reading in the daily weather and butterfly summary csv
+daily_weather <- read_csv("data/daily_weather.csv")
+Butterfly_summary <- read_csv("data/Butterfly_summary.csv")
+
+#Create a new data frame with all the rows from daily_weather and Butterfly_Summary
+Butterly_daily_weather <- full_join(daily_weather, Butterfly_summary,
+                                by =c("year"="Year", "month"="Month", "day"="Day", "Site"="Site"))
+
+#adding the previous 90 and 365 day high/low/mean temp, and adding sum of the last 90/365 day precipitation 
+Butterly_lag<- Butterly_daily_weather %>% 
+  group_by(Site) %>% 
+  arrange(Site) %>%
+  mutate(tmean_previous90=rollmean(tmean,90, na.pad = TRUE, align = "right")) %>% 
+  mutate(tmax_previous90=rollmax(tmax,90, na.pad = TRUE, align = "right")) %>% 
+  mutate(tmin_previous90=-rollmax(-tmin,90, na.pad = TRUE, align = "right")) %>%
+  mutate(tmean_previous365=rollmean(tmean,365, na.pad = TRUE, align = "right")) %>% 
+  mutate(tmax_previous365=rollmax(tmax,365, na.pad = TRUE, align = "right")) %>% 
+  mutate(tmin_previous365=-rollmax(-tmin,365, na.pad = TRUE, align = "right")) %>%
+  mutate(PrecipSum_previous90=rollsum(Precip,90, na.pad = TRUE, align = "right")) %>% 
+  mutate(PrecipSum_previous365=rollsum(Precip,365, na.pad = TRUE, align = "right"))
+  
+
+
+#Removing all of the rows that do not contain a butterfly count
+Butterly_lag %>% drop_na(Unique_butterflies)
 
 
