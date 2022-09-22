@@ -183,8 +183,49 @@ winter_precip<- subset(winter_precip, month!="5" & month!="6" & month!="7" & mon
 
 #combining the winter months into a season
 winter_precip<- winter_precip %>% 
-  mutate(PrecipSum_previous7=rollsum(monthly_precip,4, na.pad = TRUE, align = "right"))
+  mutate(PrecipSum_previous7=rollsum(monthly_precip,7, na.pad = TRUE, align = "right"))
   
+#creating winter months of 10-12
+winter_precip_firsthalf <- subset(
+  winter_precip, month!="5" & month!="6" & month!="7" & month!="8" & month!="9" & month!="1" & month!="2"
+  & month!="3" & month!="4")
+
+#combining months 10-12
+winter_precip_firsthalf<- winter_precip_firsthalf %>% 
+  mutate(PrecipSum_previous3=rollsum(monthly_precip,3, na.pad = TRUE, align = "right"))
+
+#adding 1 to each year to align with the second half of winter season
+winter_precip_firsthalf$year<- winter_precip_firsthalf$year +1
+
+#creating winter months of 1-4
+winter_precip_secondhalf<- subset(
+  winter_precip, month!="5" & month!="6" & month!="7" & month!="8" & month!="9" & month!="10" & month!="11"
+  & month!="12")
+
+#combining months 1-4
+winter_precip_secondhalf<- winter_precip_secondhalf %>% 
+  mutate(PrecipSum_previous4=rollsum(monthly_precip,4, na.pad = TRUE, align = "right"))
+
+#joining the two winter halves
+Wseason_precip<- merge(x=winter_precip_firsthalf, y=winter_precip_secondhalf, 
+                       by=c( "Site", "year", "month", "monthly_precip"), all = TRUE)
+
+#replacing NAs with 0 so rows can be added
+Wseason_precip[is.na(Wseason_precip)]<-0
+
+#adding the two rows
+Wseason_precip$Precip_total<- Wseason_precip$PrecipSum_previous3 + Wseason_precip$PrecipSum_previous4
+
+#removing unneeded columns
+Wseason_precip <- subset(Wseason_precip, select = -c(PrecipSum_previous3, PrecipSum_previous4))
+
+#combing the two halves into 1 season precip
+total_season_precip <- Wseason_precip %>% 
+  select(Site, year, Precip_total) %>% 
+  group_by(Site, year) %>% 
+  summarise(season_precip = sum(Precip_total))
+
+#count_above30 = sum(tmax>30)
 
 #Creating monsoon precip data
 monsoon_precip <- Final_Butterly %>% 
