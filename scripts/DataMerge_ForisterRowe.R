@@ -186,7 +186,7 @@ winter_precip<- winter_precip %>%
   mutate(PrecipSum_previous7=rollsum(monthly_precip,4, na.pad = TRUE, align = "right"))
   
 
-#Creating monsoon data
+#Creating monsoon precip data
 monsoon_precip <- Final_Butterly %>% 
   select(year, month, day, Site, Precip) %>% 
   group_by(Site, year, month) %>% 
@@ -200,11 +200,41 @@ monsoon_precip<- subset(monsoon_precip, month!="1" & month!="2" & month!="3" & m
 monsoon_precip <- monsoon_precip %>% 
   select(Site, year, monthly_precip) %>% 
   group_by(Site, year) %>% 
-  summarise(Monsoon_total_precip = sum(monthly_precip))
+  summarise(Mseason_precip = sum(monthly_precip))
 
 #Creating the previous year monsoon precip
 monsoon_precip<- monsoon_precip %>% 
-  dplyr::mutate(previous_monsoon = dplyr::lag(Monsoon_total_precip, n = 1, default = NA))
+  dplyr::mutate(previous_Mseason_precip = dplyr::lag(Mseason_precip, n = 1, default = NA))
+
+#Creating monsoon temperature data
+monsoon_temp <- Final_Butterly %>% 
+  select(year, month, day, Site, tmin, tmean, tmax) %>% 
+  group_by(Site, year, month) %>% 
+  summarise(monthly_tmean = mean(tmean), monthly_tmin = min(tmin), monthly_tmax = max(tmax))
+
+#removing months not in monsoon season
+monsoon_temp<- subset(monsoon_temp, month!="1" & month!="2" & month!="3" & month!="4" & month!="5" & 
+                          month!="6" & month!="10" & month!="11" & month!="12" )
+
+#combing all the months for one monsoon season
+monsoon_temp<- monsoon_temp %>% 
+  select(year, month, Site, monthly_tmean, monthly_tmin, monthly_tmax) %>% 
+  group_by(Site, year) %>% 
+  summarise(Mseason_tmean = mean(monthly_tmean), Mseason_tmin = min(monthly_tmin), Mseason_tmax = max(monthly_tmax))
+
+#combining the monsoon temp and precip data
+monsoon_all <- merge(x=monsoon_temp, y=monsoon_precip, by=c("Site", "year"), all = TRUE)
+
+#writing the monsoon data to csv
+write_csv(x = monsoon_all, 
+          file = "data/monsoon_all.csv")
+
+
+
+
+
+
+
 
 
 #Removing all of the rows that do not contain a butterfly count
