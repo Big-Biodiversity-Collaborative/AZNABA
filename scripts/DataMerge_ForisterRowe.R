@@ -9,6 +9,7 @@ library(tidyverse)
 library(lubridate)
 library(dplyr)
 library(zoo)
+library(ggplot2)
 
 # Load data and Corrects data read error with '
 matt <- read_csv(file = "data/NABA_Forister.csv")
@@ -150,10 +151,14 @@ Butterfly_summary <- read_csv("data/Butterfly_summary.csv")
 Butterly_daily_weather <- full_join(daily_weather, Butterfly_summary,
                                 by =c("year"="Year", "month"="Month", "day"="Day", "Site"="Site"))
 
-#adding the previous 90 and 365 day high/low/mean temp, and adding sum of the last 90/365 day precipitation 
+#adding the previous 30, 90, and 365 day high/low/mean temp, and adding sum of the last 30/90/365 day precipitation 
 Final_Butterly<- Butterly_daily_weather %>% 
   group_by(Site) %>% 
   arrange(Site) %>%
+  mutate(tmean_previous30=rollmean(tmean,30, na.pad = TRUE, align = "right")) %>% 
+  mutate(tmax_previous30=rollmax(tmax,30, na.pad = TRUE, align = "right")) %>% 
+  mutate(tmin_previous30=-rollmax(-tmin,30, na.pad = TRUE, align = "right")) %>%
+  mutate(PrecipSum_previous30=rollsum(Precip,30, na.pad = TRUE, align = "right")) %>% 
   mutate(tmean_previous90=rollmean(tmean,90, na.pad = TRUE, align = "right")) %>% 
   mutate(tmax_previous90=rollmax(tmax,90, na.pad = TRUE, align = "right")) %>% 
   mutate(tmin_previous90=-rollmax(-tmin,90, na.pad = TRUE, align = "right")) %>%
@@ -163,6 +168,10 @@ Final_Butterly<- Butterly_daily_weather %>%
   mutate(PrecipSum_previous90=rollsum(Precip,90, na.pad = TRUE, align = "right")) %>% 
   mutate(PrecipSum_previous365=rollsum(Precip,365, na.pad = TRUE, align = "right"))
   
+#Adding # of days over 28 and 30 
+rollapply(Final_Butterly, 30, )
+
+
 #Creating winter precip data
 winter_precip <- Final_Butterly %>% 
   select(year, month, day, Site, Precip) %>% 
@@ -170,11 +179,11 @@ winter_precip <- Final_Butterly %>%
   summarise(monthly_precip = sum(Precip))
 
 #deleting months that are not in winter season
-winter_precip<- subset(winter_precip, month!="1" & month!="2" & month!="3" & month!="11" & month!="12")
+winter_precip<- subset(winter_precip, month!="5" & month!="6" & month!="7" & month!="8" & month!="9")
 
 #combining the winter months into a season
 winter_precip<- winter_precip %>% 
-  mutate(PrecipSum_previous7=rollsum(monthly_precip,7, na.pad = TRUE, align = "right"))
+  mutate(PrecipSum_previous7=rollsum(monthly_precip,4, na.pad = TRUE, align = "right"))
   
 
 #Creating monsoon data
@@ -202,3 +211,21 @@ monsoon_precip<- monsoon_precip %>%
 Final_Butterly %>% drop_na(Unique_butterflies)
 
 
+#Counting the number of samples per month
+sample_months <-Butterfly_summary %>% 
+  count(Month)
+
+#renaming n to samples
+sample_months <-sample_months %>% 
+  rename(Sample_Number = n)
+
+#Creating a bar plot
+month_count <- sample_months$Sample_Number
+names(month_count)<- sample_months$Month
+barplot(month_count, 
+        names.arg = c("March", "April", "May", "June", "July", "August", "September", "October"),
+        las=2,
+        main = "Number of Butterfly Samples for Each Month",
+        xlab = "Month",
+        ylab = "Number of Samples",
+        ylim = c(0,100))
