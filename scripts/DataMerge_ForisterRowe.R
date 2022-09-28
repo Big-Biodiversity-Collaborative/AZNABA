@@ -170,14 +170,14 @@ Final_Butterly<- Butterly_daily_weather %>%
   
 
 #Creating winter precip data
-winter_precip <- Final_Butterly %>% 
+initial_winter_precip <- Final_Butterly %>% 
   select(year, month, day, Site, Precip, tmean, tmax, tmin) %>% 
   group_by(Site, year, month) %>% 
   summarise(monthly_precip = sum(Precip), monthly_tmean = mean(tmean), monthly_tmax = max(tmax), 
             monthly_tmin = min(tmin))
 
 #deleting months that are not in winter season
-winter_precip<- subset(winter_precip, month!="5" & month!="6" & month!="7" & month!="8" & month!="9")
+winter_precip<- subset(initial_winter_precip, month!="5" & month!="6" & month!="7" & month!="8" & month!="9")
 
   
 #creating winter months of 10-12
@@ -217,8 +217,8 @@ Wseason_precip <- subset(Wseason_precip, select = -c(PrecipSum_previous3, Precip
 
 #combing the two halves into 1 season precip
 total_Wseason_precip <- Wseason_precip %>% 
-  select(Site, year, Precip_total, monthly_tmean, monthly_tmax, monthly_tmin) %>% 
-  group_by(Site, year) %>% 
+  select(Site, year, month, Precip_total, monthly_tmean, monthly_tmax, monthly_tmin) %>% 
+  group_by(Site, year, month) %>% 
   summarise(Wseason_precip = sum(Precip_total), Wseason_tmean = mean(monthly_tmean),
             Wseason_tmax = max(monthly_tmax), Wseason_tmin = min(monthly_tmin))
 
