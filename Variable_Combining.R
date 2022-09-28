@@ -8,15 +8,13 @@ library(ggplot2)
 winter <- read_csv(file = "data/winter_all.csv")
 monsoon <- read_csv(file = "data/monsoon_all.csv")
 butterfly <- read_csv(file = "data/Final_butterfly2.csv") 
+sampling_events <- read_csv(file= "data/Butterfly_summary.csv")
 
 #joining the monsoon and winter data
 Seasonal <- left_join(winter, monsoon, by=c("Site", "year"))
 
 #joining the seasonal data to the butterfly data
-butterfly <- butterfly %>% 
-  drop_na(Unique_butterflies)
-
-seasonal_butterfly <- left_join(butterfly, Seasonal, by=c("Site", "year"="year"))
+seasonal_butterfly <- left_join(butterfly, Seasonal, by=c("Site", "year"))
 
 #dropping days without a sampling event
 sampling_events <-seasonal_butterfly %>% 
@@ -26,12 +24,6 @@ sampling_events <-seasonal_butterfly %>%
 sampling_events <- sampling_events %>% 
   drop_na(tmin)
 
-#Finding out why we have 18 extra rows (portal has 2 listed lats)
-sampling_events %>% 
-  count(Site)
-
-Butterfly_summary %>% 
-  count(Site)
 
 #adding recent precip option 1
 sampling_events <- mutate(sampling_events, recent_precip1 = 
@@ -44,3 +36,10 @@ sampling_events <- mutate(sampling_events, recent_precip2 =
                             ifelse(month%in% 3:8, sampling_events$Wseason_precip,
                                                 ifelse(month%in% 9, sampling_events$PrecipSum_previous90,
                                                        sampling_events$Mseason_precip)))
+
+#removing unneeded columns
+sampling_events<- subset(sampling_events, select = -c(Group_Thirty, Group_Twentyeight, previous_Mseason_precip))
+
+#Creating a csv of the sampling events
+write_csv(x = sampling_events, 
+          file = "data/sampling_events.csv")
