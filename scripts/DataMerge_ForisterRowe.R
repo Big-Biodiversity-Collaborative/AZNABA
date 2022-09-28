@@ -168,9 +168,6 @@ Final_Butterly<- Butterly_daily_weather %>%
   mutate(PrecipSum_previous90=rollsum(Precip,90, na.pad = TRUE, align = "right")) %>% 
   mutate(PrecipSum_previous365=rollsum(Precip,365, na.pad = TRUE, align = "right"))
   
-#Adding # of days over 28 and 30 
-rollapply(Final_Butterly, 30, )
-
 
 #Creating winter precip data
 winter_precip <- Final_Butterly %>% 
@@ -225,10 +222,10 @@ total_Wseason_precip <- Wseason_precip %>%
   summarise(Wseason_precip = sum(Precip_total), Wseason_tmean = mean(monthly_tmean),
             Wseason_tmax = max(monthly_tmax), Wseason_tmin = min(monthly_tmin))
 
+#Creating a csv of the yearly winter data
 write_csv(x = total_Wseason_precip, 
           file = "data/winter_all.csv")
 
-#count_above30 = sum(tmax>30)
 
 #Creating monsoon precip data
 monsoon_precip <- Final_Butterly %>% 
@@ -275,16 +272,6 @@ write_csv(x = monsoon_all,
 
 
 
-
-
-
-
-
-
-#Removing all of the rows that do not contain a butterfly count
-Final_Butterly %>% drop_na(Unique_butterflies)
-
-
 #Counting the number of samples per month
 sample_months <-Butterfly_summary %>% 
   count(Month)
@@ -294,9 +281,9 @@ sample_months <-sample_months %>%
   rename(Sample_Number = n)
 
 #Creating a bar plot
-#Creating a list with the number of sampling events
+#Creating lists with the number of sampling events
 month_count <- sample_months$Sample_Number
-#
+
 names(month_count)<- sample_months$Month
 
 barplot(month_count, 
@@ -333,7 +320,9 @@ Final_Butterly2 <- Final_Butterly2 %>%
   mutate(Previous365_above28=rollsum(Group_Twentyeight,365, na.pad = TRUE, align = "right"))
   
 
-
+#Writing butterfly data to csv
+write_csv(x = Final_Butterly2, 
+          file = "data/Final_Butterfly2.csv")
 
 
 
