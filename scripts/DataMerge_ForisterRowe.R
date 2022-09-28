@@ -49,6 +49,11 @@ Az_naba_all <- az_naba %>%
 lat_long_site <- read_csv(file = "data/lat-long-site.csv")
 all_sites_climate <- read_csv("data/all-sites-climate.csv")
 
+#deleting the duplicate Portal entry
+
+lat_long_site <- lat_long_site %>% 
+  filter(Latitude != 33.8500)
+
 #Adding Lat/Long to the az_naba_all file
 az_naba_lat_long <- left_join(Az_naba_all, lat_long_site, by ="Site")
 
@@ -138,6 +143,10 @@ daily_weather$Site[daily_weather$Site=="Springervill"]<-"SpringervilleAZ"
 daily_weather$Site[daily_weather$Site=="McDowellSono"]<-"McDowellSonoranPreserve"
 daily_weather$Site[daily_weather$Site=="GrandCanyonN"]<-"GrandCanyonNorthRim"
 
+#Deleting the uneeded portal site
+daily_weather <- daily_weather %>% 
+  filter(Latitude != 33.8500)
+
 #Creating a csv file for the daily weather data frame 
 write_csv(x = daily_weather, 
           file = "data/daily_weather.csv")
@@ -217,8 +226,8 @@ Wseason_precip <- subset(Wseason_precip, select = -c(PrecipSum_previous3, Precip
 
 #combing the two halves into 1 season precip
 total_Wseason_precip <- Wseason_precip %>% 
-  select(Site, year, month, Precip_total, monthly_tmean, monthly_tmax, monthly_tmin) %>% 
-  group_by(Site, year, month) %>% 
+  select(Site, year, Precip_total, monthly_tmean, monthly_tmax, monthly_tmin) %>% 
+  group_by(Site, year) %>% 
   summarise(Wseason_precip = sum(Precip_total), Wseason_tmean = mean(monthly_tmean),
             Wseason_tmax = max(monthly_tmax), Wseason_tmin = min(monthly_tmin))
 
