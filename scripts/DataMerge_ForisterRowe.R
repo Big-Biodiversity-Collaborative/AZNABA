@@ -174,16 +174,14 @@ rollapply(Final_Butterly, 30, )
 
 #Creating winter precip data
 winter_precip <- Final_Butterly %>% 
-  select(year, month, day, Site, Precip) %>% 
+  select(year, month, day, Site, Precip, tmean, tmax, tmin) %>% 
   group_by(Site, year, month) %>% 
-  summarise(monthly_precip = sum(Precip))
+  summarise(monthly_precip = sum(Precip), monthly_tmean = mean(tmean), monthly_tmax = max(tmax), 
+            monthly_tmin = min(tmin))
 
 #deleting months that are not in winter season
 winter_precip<- subset(winter_precip, month!="5" & month!="6" & month!="7" & month!="8" & month!="9")
 
-#combining the winter months into a season
-winter_precip<- winter_precip %>% 
-  mutate(PrecipSum_previous7=rollsum(monthly_precip,7, na.pad = TRUE, align = "right"))
   
 #creating winter months of 10-12
 winter_precip_firsthalf <- subset(
@@ -208,7 +206,8 @@ winter_precip_secondhalf<- winter_precip_secondhalf %>%
 
 #joining the two winter halves
 Wseason_precip<- merge(x=winter_precip_firsthalf, y=winter_precip_secondhalf, 
-                       by=c( "Site", "year", "month", "monthly_precip"), all = TRUE)
+                       by=c( "Site", "year", "month", "monthly_precip", "monthly_tmax", "monthly_tmin",
+                             "monthly_tmean"), all = TRUE)
 
 #replacing NAs with 0 so rows can be added
 Wseason_precip[is.na(Wseason_precip)]<-0
@@ -220,10 +219,14 @@ Wseason_precip$Precip_total<- Wseason_precip$PrecipSum_previous3 + Wseason_preci
 Wseason_precip <- subset(Wseason_precip, select = -c(PrecipSum_previous3, PrecipSum_previous4))
 
 #combing the two halves into 1 season precip
-total_season_precip <- Wseason_precip %>% 
-  select(Site, year, Precip_total) %>% 
+total_Wseason_precip <- Wseason_precip %>% 
+  select(Site, year, Precip_total, monthly_tmean, monthly_tmax, monthly_tmin) %>% 
   group_by(Site, year) %>% 
-  summarise(season_precip = sum(Precip_total))
+  summarise(Wseason_precip = sum(Precip_total), Wseason_tmean = mean(monthly_tmean),
+            Wseason_tmax = max(monthly_tmax), Wseason_tmin = min(monthly_tmin))
+
+write_csv(x = total_Wseason_precip, 
+          file = "data/winter_all.csv")
 
 #count_above30 = sum(tmax>30)
 
@@ -291,12 +294,48 @@ sample_months <-sample_months %>%
   rename(Sample_Number = n)
 
 #Creating a bar plot
+#Creating a list with the number of sampling events
 month_count <- sample_months$Sample_Number
+#
 names(month_count)<- sample_months$Month
+
 barplot(month_count, 
         names.arg = c("March", "April", "May", "June", "July", "August", "September", "October"),
         las=2,
-        main = "Number of Butterfly Samples for Each Month",
+        main = "Number of Butterfly Sampling Events for Each Month",
         xlab = "Month",
-        ylab = "Number of Samples",
+        ylab = "Number of Sampling Events",
         ylim = c(0,100))
+
+# Getting days over 30/28 for 30/90/365 day intervals 
+
+#Creating a column that signifies if tmax was greater than 30 for the day
+Final_Butterly2 <- Final_Butterly %>% 
+  mutate(Group_Thirty = case_when(
+    tmax <= 30 ~ 0,
+    tmax > 30 ~ 1
+  ))
+#Creating a column that signifies if tmax was greater than 28 for the day
+Final_Butterly2 <- Final_Butterly2 %>% 
+  mutate(Group_Twentyeight = case_when(
+    tmax <= 28 ~ 0,
+    tmax > 28 ~ 1
+  ))
+
+Final_Butterly2 <- Final_Butterly2 %>%  
+  group_by(Site) %>% 
+  arrange(Site) %>% 
+  mutate(Previous30_above30=rollsum(Group_Thirty,30, na.pad = TRUE, align = "right")) %>% 
+  mutate(Previous90_above30=rollsum(Group_Thirty,90, na.pad = TRUE, align = "right")) %>% 
+  mutate(Previous365_above30=rollsum(Group_Thirty,365, na.pad = TRUE, align = "right")) %>% 
+  mutate(Previous30_above28=rollsum(Group_Twentyeight,30, na.pad = TRUE, align = "right")) %>% 
+  mutate(Previous90_above28=rollsum(Group_Twentyeight,90, na.pad = TRUE, align = "right")) %>% 
+  mutate(Previous365_above28=rollsum(Group_Twentyeight,365, na.pad = TRUE, align = "right"))
+  
+
+
+
+
+
+
+
