@@ -8,7 +8,7 @@ library(ggplot2)
 winter <- read_csv(file = "data/winter_all.csv")
 monsoon <- read_csv(file = "data/monsoon_all.csv")
 butterfly <- read_csv(file = "data/Final_butterfly2.csv") 
-sampling_events <- read_csv(file= "data/Butterfly_summary.csv")
+baseline <- read_csv(file= "data/Butterfly_summary.csv")
 
 #joining the monsoon and winter data
 Seasonal <- left_join(winter, monsoon, by=c("Site", "year"))
@@ -43,3 +43,6 @@ sampling_events<- subset(sampling_events, select = -c(Group_Thirty, Group_Twenty
 #Creating a csv of the sampling events
 write_csv(x = sampling_events, 
           file = "data/sampling_events.csv")
+
+
+
