@@ -73,4 +73,5 @@ party_values<- party_values[!duplicated(party_values[c("Year", "Site", "PartyHou
 
 
 #joining the party variables to sampling events
-party_butterfly <- left_join(sampling_events, party_values, by=c("year"="Year", "month"="Month", "Site"="Site"))
+party_butterfly <- left_join(sampling_events, party_values, by=c("year"="Year", "month"="Month",
+                                                                 "Site"="Site", "day"="Day"))
