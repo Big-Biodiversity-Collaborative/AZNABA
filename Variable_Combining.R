@@ -52,12 +52,12 @@ party_values <- party_values %>%
          Total_Observers = '#Observers'
   )
 #Removing unneeded rows
-party_values <- subset(party_values, select = -c(NABAEnglishName, ButterflyCount, Longitude, Latitude))
+party_values <- subset(party_values, select = -c(NABAEnglishName, Longitude, Latitude))
 
 #Trying to group sampling events
 party_values <- party_values %>% 
-  select(Year, Month, Day, Site, PartyHours, Total_Parties, Total_Observers, TotalDistanceMi) %>% 
-  group_by(Year, Month, Day, Site,Total_Observers, TotalDistanceMi)
+  select(Year, ButterflyCount, Month, Day, Site, PartyHours, Total_Parties, Total_Observers, TotalDistanceMi) %>% 
+  group_by(Year, Month, Day, Site,Total_Observers, TotalDistanceMi, ButterflyCount)
 
 #removing duplicates (however we have 271 values when we should have only 219)
 party_values <- party_values %>% 
@@ -67,11 +67,23 @@ party_values <- party_values %>%
 party_values<- party_values[!duplicated(party_values[c("Year", "Month", "Day", "Site", "PartyHours", "Total_Parties")],
                                         fromLast = TRUE),]
 
-#Removing duplicates in helen's dadta where I assume a copying error occurred
+#Removing duplicates in helen's data where I assume a copying error occurred
 party_values<- party_values[!duplicated(party_values[c("Year", "Site", "PartyHours", "Total_Parties")],
                                         fromLast = TRUE),]
 
+#Removing incorrect rows for santa rita mountains 2018
+party_values <- party_values[!(party_values$Site == 'SantaRitaMountains' & party_values$Year == 2018 &
+                 party_values$PartyHours == 41.5),]
+
+#Removing incorrect rows for santa rita mountains 2019
+party_values <- party_values[!(party_values$Site == 'SantaRitaMountains' & party_values$Year == 2019 &
+                                 party_values$PartyHours == 48.5),]
 
 #joining the party variables to sampling events
 party_butterfly <- left_join(sampling_events, party_values, by=c("year"="Year", "month"="Month",
                                                                  "Site"="Site", "day"="Day"))
+
+
+#Creating a final csv of the sampling event data along with weather data
+write_csv(x = party_butterfly, 
+          file = "data/Butterfly_Analysis.csv")
