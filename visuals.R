@@ -2,6 +2,7 @@
 library(tidyverse)
 library(lubridate)
 library(dplyr)
+library(ggplot2)
 
 
 #Creating a new daily weather file 
@@ -26,8 +27,6 @@ daily_weather <- daily_weather %>%
          Site = 'Name'
   )
 
-#removing unneeded rows
-daily_weather <- subset(daily_weather, select = -c(vpdmin, vpdmax, Longitude, Latitude, Elevation))
 
 #converting date to work with the lubridate package
 daily_weather$Date <- lubridate::ymd(daily_weather$Date)
@@ -45,13 +44,24 @@ yearly_precip<- daily_weather %>%
   group_by(Site, year) %>% 
   summarize(Pyear = sum(Precip))
 
-#reading in richness/abundance csv
-bfly_summary <- read_csv(file = "data/Butterfly_Summary.csv")
+#reading in analysis csv
+bfly_summary <- read_csv(file = "data/Butterfly_Analysis.csv")
+
+#selecting only the needed rows
+bfly_summary <- bfly_summary %>% 
+  select(year, month, day, Site, total_butterly_count, Unique_butterflies)
 
 #combining year/month/day back into a date
-bfly_summary$date <- as.Date(with(bfly_summary, paste(Year,Month,Day, sep = "-")), "%Y-%m-%d")
+bfly_summary$date <- as.Date(with(bfly_summary, paste(year,month,day, sep = "-")), "%Y-%m-%d")
 
+#creating graph for date and butterfly count
+interaction.plot(bfly_summary$date, bfly_summary$Site, bfly_summary$total_butterly_count,
+                 xlab = "Date", ylab = "Butterfly Count", col = c(1:15), legend = F)
 
+#creating graph for date and butterfly count
+ggplot(bfly_summary, aes(x = date, y = total_butterly_count, color = Site)) +
+  geom_line() +
+  scale_x_date(date_labels = "%Y-%m")
 
 
 
