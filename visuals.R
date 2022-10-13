@@ -63,6 +63,8 @@ ggplot(bfly_summary, aes(x = date, y = total_butterly_count, color = Site)) +
   geom_line() +
   scale_x_date(date_labels = "%Y-%m")
 
+#viewing weird counts
+santa_check <- Az_naba_all %>% filter((Site == "SantaRitaMountains") & (Year == 2021))
 
 
 
