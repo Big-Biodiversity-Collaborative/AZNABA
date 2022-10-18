@@ -41,6 +41,13 @@ az_naba <- matt %>%
 Az_naba_all <- az_naba %>%
   distinct() 
 
+#Removing incorrect rows for santa rita mountains 2018
+Az_naba_all <- Az_naba_all[!(Az_naba_all$Site == 'SantaRitaMountains' & Az_naba_all$Year == 2018 &
+                                 Az_naba_all$PartyHours == 41.5),]
+
+#Removing incorrect rows for santa rita mountains 2019
+Az_naba_all <- Az_naba_all[!(Az_naba_all$Site == 'SantaRitaMountains' & Az_naba_all$Year == 2019 &
+                                 Az_naba_all$PartyHours == 48.5),]
 #BRADLY: Add lat/long to Az_naba_all
 #Check the names in Helen's file ' 
 #??Urbanization get file from Helen
