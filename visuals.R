@@ -3,7 +3,7 @@ library(tidyverse)
 library(lubridate)
 library(dplyr)
 library(ggplot2)
-
+library(ggbreak)
 
 #Creating a new daily weather file 
 daily_weather <- NULL
@@ -54,15 +54,13 @@ bfly_summary <- bfly_summary %>%
 #combining year/month/day back into a date
 bfly_summary$date <- as.Date(with(bfly_summary, paste(year,month,day, sep = "-")), "%Y-%m-%d")
 
-#creating graph for date and butterfly count
-interaction.plot(bfly_summary$date, bfly_summary$Site, bfly_summary$total_butterly_count,
-                 xlab = "Date", ylab = "Butterfly Count", col = c(1:15), legend = F)
-
-#creating graph for date and butterfly count
-ggplot(bfly_summary, aes(x = date, y = total_butterly_count, color = Site)) +
+#creating graph for date and butterfly count for each site
+p <- ggplot(bfly_summary, aes(x = date, y = total_butterly_count, color = Site)) +
   geom_line() +
   scale_x_date(date_labels = "%Y-%m")
 
+BflyCount <- p + scale_y_break(breaks = c(20000, 132000)) + scale_y_continuous(labels = scales::comma)
+BflyCount
 #viewing weird counts
 santa_check <- Az_naba_all %>% filter((Site == "SantaRitaMountains") & (Year == 2021))
 
