@@ -5,6 +5,8 @@ library(dplyr)
 library(ggplot2)
 library(ggbreak)
 library(zoo)
+library(lme4)
+library(glme)
 
 #Creating a new daily weather file 
 daily_weather <- NULL
@@ -96,5 +98,18 @@ BflyPrecip
 #viewing weird counts
 santa_check <- Az_naba_all %>% filter((Site == "SantaRitaMountains") & (Year == 2021))
 
+bfly_analysis <- read_csv(file = "data/Butterfly_Analysis.csv")
+
+temp_fit <- lmer(total_butterly_count~tmean_previous90 +PrecipSum_previous90 + (1|Site), data=bfly_analysis)
+temp_fit
+summary(temp_fit)
+
+res<- resid(temp_fit)
+plot(fitted(temp_fit), res) 
+abline(0,0)
 
 
+
+temp_fit <- lm(total_butterly_count~tmean_previous90 +PrecipSum_previous90 + Site, data=bfly_analysis)
+#Repeated measures model - site random effect and repeated over time
+#why random effect for site
