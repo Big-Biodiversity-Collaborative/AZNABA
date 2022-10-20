@@ -44,6 +44,10 @@ monthly_tmean<- daily_weather %>%
 
 #creating a year-month date column
 monthly_tmean$Date <- as.yearmon(paste(monthly_tmean$year, monthly_tmean$month), "%Y %m")
+#creating a 2021 only monthly tmean
+monthly_tmean2 <- monthly_tmean %>% 
+  select(Site, year, month, Tmonth, Date) %>% 
+  filter(year > 2020)
 
 #grouping by yearly precip
 yearly_precip<- daily_weather %>% 
@@ -87,6 +91,13 @@ BflyTemp <- t + xlab("Date") + ylab("Monthly Temperature") +
   ggtitle("Monthly Temperature for Each Sampling Site")
 
 BflyTemp
+
+#creating a graph for 2021 monthly site temperature
+t2 <- ggplot(monthly_tmean2, aes(x = Date, y = Tmonth, color = Site)) + geom_line()
+BflyTemp2 <- t2 + xlab("Date") + ylab("Monthly Temperature") +
+  ggtitle("Monthly Temperature for Each Sampling Site")
+
+BflyTemp2
 
 #creating a graph for yearly precip for each site
 p <- ggplot(yearly_precip, aes(x = year, y = Pyear, color = Site)) + geom_line()
