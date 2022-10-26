@@ -10,4 +10,4 @@ The sources of data were all from NABA. One set was assembled by Matt Forister f
 
 Separate tables included in the data folder are the lat/long coordinates for all of the sites and %urbanization for the sites in the Conservancy data. Percent urbanization is defined as the percent impervious surface (from NLCD) within the defined buffers around each center point. 10km was the largest diameter that could be used without crossing the US/Mexico border at the Ramsey and Santa Rita sites (i.e., missing data in Mexico). 
 
-There were several large outliers at Santa Rita site (over x). HOW WE DEALT WTIH THESE.
+There were several large outliers at Santa Rita site that were eruptive species (over x). HOW WE DEALT WTIH THESE.
