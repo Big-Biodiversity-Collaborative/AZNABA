@@ -7,6 +7,7 @@ library(ggbreak)
 library(zoo)
 library(lme4)
 library(glme)
+library(DescTools)
 
 #Creating a new daily weather file 
 daily_weather <- NULL
@@ -124,3 +125,10 @@ abline(0,0)
 temp_fit <- lm(total_butterly_count~tmean_previous90 +PrecipSum_previous90 + Site, data=bfly_analysis)
 #Repeated measures model - site random effect and repeated over time
 #why random effect for site
+
+
+
+#Winsorizing the butterfly count 
+bfly_summary$Win1 <- DescTools::Winsorize(bfly_summary$total_butterly_count, probs = c(0.005, 0.995))
+bfly_summary$Win1.5 <- DescTools::Winsorize(bfly_summary$total_butterly_count, probs = c(0.0075, 0.9925))
+bfly_summary$Win2 <- DescTools::Winsorize(bfly_summary$total_butterly_count, probs = c(0.01, 0.99))
