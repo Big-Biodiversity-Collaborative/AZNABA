@@ -132,3 +132,10 @@ temp_fit <- lm(total_butterly_count~tmean_previous90 +PrecipSum_previous90 + Sit
 bfly_summary$Win1 <- DescTools::Winsorize(bfly_summary$total_butterly_count, probs = c(0.005, 0.995))
 bfly_summary$Win1.5 <- DescTools::Winsorize(bfly_summary$total_butterly_count, probs = c(0.0075, 0.9925))
 bfly_summary$Win2 <- DescTools::Winsorize(bfly_summary$total_butterly_count, probs = c(0.01, 0.99))
+bfly_summary$Win9915 <- DescTools::Winsorize(bfly_summary$total_butterly_count, probs = c(0, 0.9915))
+
+
+
+
+
+
