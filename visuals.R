@@ -142,6 +142,7 @@ bfly_summary$Win9915 <- DescTools::Winsorize(bfly_summary$total_butterly_count, 
 
 #Adding in a new column to identify if in monsoon season or not
 bfly_summary$Mseason <-NA
+bfly_summary$Mseason2 <- NA
 
 #Filling the column with 1 for monsoon and 0 for non-monsoon
 bfly_summary <- bfly_summary %>% 
@@ -150,12 +151,14 @@ bfly_summary <- bfly_summary %>%
     month >6 ~ 1
   ))
 
+bfly_summary <- bfly_summary %>% 
+  mutate(Mseason2 = case_when(
+    month <=7 ~ 0,
+    month >7 ~ 1
+  ))
 
 
-soon <- ggplot(bfly_summary, aes(x = date, y = total_butterly_count, color = Site, linetype = Mseason)) +
-  geom_line() + scale_linetype_manual(values = c(rep("solid", 1), rep("dashed", 0)))
-  scale_x_date(date_labels = "%Y-%m")
 
-soon
+
 
 
