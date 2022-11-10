@@ -70,6 +70,11 @@ p <- ggplot(bfly_summary, aes(x = date, y = total_butterly_count, color = Site))
   geom_line() +
   scale_x_date(date_labels = "%Y-%m")
 
+p2 <- ggplot(bfly_summary, aes(x = month, y = total_butterly_count, color = Site)) +
+  geom_line() 
+
+p2
+
 BflyAbundance <- p + scale_y_break(breaks = c(20000, 132000)) +
   scale_y_continuous(labels = scales::comma) +
   xlab("Date") + ylab("Butterfly Count") + ggtitle("Total Butterfly Counts for Each Sampling Event")
@@ -135,7 +140,22 @@ bfly_summary$Win2 <- DescTools::Winsorize(bfly_summary$total_butterly_count, pro
 bfly_summary$Win9915 <- DescTools::Winsorize(bfly_summary$total_butterly_count, probs = c(0, 0.9915))
 
 
+#Adding in a new column to identify if in monsoon season or not
+bfly_summary$Mseason <-NA
+
+#Filling the column with 1 for monsoon and 0 for non-monsoon
+bfly_summary <- bfly_summary %>% 
+  mutate(Mseason = case_when(
+    month <=6 ~ 0,
+    month >6 ~ 1
+  ))
 
 
+
+soon <- ggplot(bfly_summary, aes(x = date, y = total_butterly_count, color = Site, linetype = Mseason)) +
+  geom_line() + scale_linetype_manual(values = c(rep("solid", 1), rep("dashed", 0)))
+  scale_x_date(date_labels = "%Y-%m")
+
+soon
 
 
