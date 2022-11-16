@@ -157,8 +157,26 @@ bfly_summary <- bfly_summary %>%
     month >7 ~ 1
   ))
 
+#creating the spring data observations
+bfly_spring <- bfly_summary %>% 
+  select(year, month, day, Site, total_butterly_count, Unique_butterflies, date, Win9915) %>% 
+  filter(month > 6)
 
+#Removing second sampling of santarita mountains
+bfly_spring <- bfly_spring[!(bfly_spring$Site == 'SantaRitaMountains' & bfly_spring$month == 9),]
+bfly_spring <- bfly_spring[!(bfly_spring$Site == 'SantaRitaMountains' & bfly_spring$month == 10),]
 
+#removing pre 7/15 sampling
+bfly_spring <- bfly_spring[!(bfly_spring$Site == 'GrandCanyonNorthRim' & bfly_spring$month == 7),]
+bfly_spring <- bfly_spring[!(bfly_spring$Site == 'SycamoreCreekAZ' & bfly_spring$month == 7),]
 
+#Creating the fall data observations
+bfly_fall <- bfly_summary %>% 
+  select(year, month, day, Site, total_butterly_count, Unique_butterflies, date, Win9915) %>% 
+  filter(month < 7)
+
+#Removing post 6/15 sampling  
+bfly_fall <- bfly_fall[!(bfly_fall$Site == 'RamseyCanyonAZ' & bfly_fall$month == 6),]
+bfly_fall <- bfly_fall[!(bfly_fall$Site == 'AtascosaHighlandsAZ' & bfly_fall$month == 6),]
 
 
