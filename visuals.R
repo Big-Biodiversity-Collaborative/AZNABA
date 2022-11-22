@@ -167,8 +167,8 @@ bfly_spring <- bfly_spring[!(bfly_spring$Site == 'SantaRitaMountains' & bfly_spr
 bfly_spring <- bfly_spring[!(bfly_spring$Site == 'SantaRitaMountains' & bfly_spring$month == 10),]
 
 #removing pre 7/15 sampling
-bfly_spring <- bfly_spring[!(bfly_spring$Site == 'GrandCanyonNorthRim' & bfly_spring$month == 7),]
-bfly_spring <- bfly_spring[!(bfly_spring$Site == 'SycamoreCreekAZ' & bfly_spring$month == 7),]
+bfly_spring <- bfly_spring[!(bfly_spring$Site == 'GrandCanyonNorthRim' & bfly_spring$day == 5),]
+bfly_spring <- bfly_spring[!(bfly_spring$Site == 'SycamoreCreekAZ' & bfly_spring$day == 7),]
 
 #Creating the fall data observations
 bfly_fall <- bfly_summary %>% 
