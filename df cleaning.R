@@ -6,6 +6,7 @@ library(zoo)
 library(lme4)
 library(glme)
 library(DescTools)
+library(nlme)
 
 #Reading in the DF
 bfly_analysis <- read_csv(file = "data/Butterfly_Analysis.csv")
@@ -63,7 +64,32 @@ summary(model2)
 
 
 
+model3 = lme(fixed=total_butterfly_count~year, data=bfly_fall, random= ~1|Site)
+summary(model3)
 
+model3
 
+model4 = lme(fixed=total_butterfly_count~year+ tmean_previous30 + tmin_previous30 + tmax_previous30, data=bfly_fall, random= ~1|Site)
+summary(model4)
+plot(model4)
 
+model5 = lme(fixed=log(total_butterfly_count)~year+ tmean_previous30 + tmin_previous30 + tmax_previous30, data=bfly_fall, random= ~1|Site)
+plot(model5)
+summary(model5)
 
+model6 = lme(fixed=log(total_butterfly_count)~year+ tmean_previous30 + tmin_previous30 + tmax_previous30 + PrecipSum_previous90, data=bfly_fall, random= ~1|Site) 
+summary(model6)
+plot(model6)
+
+model7 = lme(log(total_butterfly_count)~year+ tmean_previous30 + tmin_previous30 + tmax_previous30 + PrecipSum_previous90 + (1|Site) + (1|year), data=bfly_fall) 
+
+model8 = lme(fixed=log(total_butterfly_count)~year+ tmean_previous30 + tmin_previous30 + tmax_previous30 + PrecipSum_previous90, data=bfly_fall, random=list(~1|year, ~1|Site)) 
+summary(model8)
+plot(model8)
+
+model9 = update(model8, correlation= corAR1())
+
+plot(model9)
+model9$varFix
+
+cov2cor(vcov(model9))
