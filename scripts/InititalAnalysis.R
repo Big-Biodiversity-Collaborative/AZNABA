@@ -8,6 +8,7 @@ library(glme)
 library(DescTools)
 library(nlme)
 library(readr)
+library(lattice)
 
 #Reading in the DF
 bfly_spring<- read.csv(file = "data/Spring_Analysis.csv")
@@ -55,6 +56,9 @@ ranef(model_fall1)
 plot(model_fall1)
 vif(model_fall1)
 
+fallran <- ranef(model_fall1)
+dotplot(fallran)
+
 #spring model
 model_spring1 = lmer(log(total_butterfly_count) ~ +year
                    
@@ -71,6 +75,9 @@ summary(model_spring1)
 ranef(model_spring1)
 plot(model_spring1)
 vif(model_spring1)
+
+springran <- ranef(model_spring1)
+dotplot(springran)
 
 #test model 
 #precip 365 not as good as Monsoon
