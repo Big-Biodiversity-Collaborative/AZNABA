@@ -55,6 +55,23 @@ ranef(model_fall1)
 plot(model_fall1)
 vif(model_fall1)
 
+#spring model
+model_spring1 = lmer(log(total_butterfly_count) ~ +year
+                   
+                   + tmin_previous30 + 
+                     
+                     tmax_previous30+
+                     Mseason_precip+
+                     Wseason_precip +
+                     PartyHours +
+                     (1|Site)  ,
+                   data=bfly_spring,
+                   REML = TRUE)
+summary(model_spring1) 
+ranef(model_spring1)
+plot(model_spring1)
+vif(model_spring1)
+
 #test model 
 #precip 365 not as good as Monsoon
 model_fall2 = lmer(log(total_butterfly_count) ~ +year
