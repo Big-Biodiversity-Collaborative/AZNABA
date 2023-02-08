@@ -39,7 +39,10 @@ az_naba <- matt %>%
  
 #Delete duplicate rows
 Az_naba_all <- az_naba %>%
-  distinct() 
+  distinct(Site,Year,Month,Day, tolower(gsub(x=NABAEnglishName,
+                                             pattern = "-|\' ",
+                                             replacement = " ")), 
+           .keep_all = TRUE) 
 
 #Removing incorrect rows for santa rita mountains 2018
 Az_naba_all <- Az_naba_all[!(Az_naba_all$Site == 'SantaRitaMountains' & Az_naba_all$Year == 2018 &
