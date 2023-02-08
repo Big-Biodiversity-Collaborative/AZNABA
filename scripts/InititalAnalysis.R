@@ -9,7 +9,8 @@ library(DescTools)
 library(nlme)
 library(readr)
 library(lattice)
-
+library(car)
+library(lmerTest)
 #Reading in the DF
 bfly_spring<- read.csv(file = "data/Spring_Analysis.csv")
 bfly_fall<-read.csv(file = "data/fall_Analysis.csv")
@@ -35,7 +36,7 @@ model_fall = lmer(log(total_butterfly_count) ~ +tmean_previous30+year +
 summary(model_fall) 
 ranef(model_fall)
 plot(model_fall)
-library(car)
+
 
 #Check out more variables need precip! ADD random ?+ (1|year)
 #90days in temp not significant
@@ -55,27 +56,28 @@ summary(model_fall1)
 ranef(model_fall1)
 plot(model_fall1)
 vif(model_fall1)
+anova(model_fall1)
 
 fallran <- ranef(model_fall1)
 dotplot(fallran)
 
 #spring model
-model_spring1 = lmer(log(total_butterfly_count) ~ +year
+model_spring1 = lm(log(total_butterfly_count)  ~year
                    
                    + tmin_previous30 + 
                      
                      tmax_previous30+
                      Mseason_precip+
                      Wseason_precip +
-                     PartyHours +
-                     (1|Site)  ,
-                   data=bfly_spring,
-                   REML = TRUE)
+                     PartyHours 
+                       ,
+                   data=bfly_spring
+                   )
 summary(model_spring1) 
-ranef(model_spring1)
+
 plot(model_spring1)
 vif(model_spring1)
-
+anova(model_spring1)
 springran <- ranef(model_spring1)
 dotplot(springran)
 
@@ -150,3 +152,57 @@ plot(model9)
 model9$varFix
 
 cov2cor(vcov(model9))
+
+
+hist(bfly_fall$Unique_butterflies)
+hist(bfly_spring$Unique_butterflies)
+#spring model for unique butterflies
+model_spring5 = lm(Unique_butterflies  ~year
+                   
+                   + tmin_previous30 + 
+                     
+                     tmax_previous30+
+                     Mseason_precip+
+                     Wseason_precip +
+                     PartyHours 
+                   ,
+                   data=bfly_spring)
+summary(model_spring5) 
+plot(model_spring5)
+#fall model for unique butterflies
+model_fall5 = lmer(sqrt(Unique_butterflies) ~ +year
+                   
+                   + tmin_previous30 + 
+                     
+                     tmax_previous30+
+                     Mseason_precip+
+                     Wseason_precip +
+                     PartyHours +
+                     (1|Site)  ,
+                   data=bfly_fall,
+                   REML = TRUE)
+summary(model_fall5) 
+plot(model_fall5)
+vif(model_fall5)
+
+#creating spaghetti plots for total and unique butterflies over time for each site
+springcounts <- ggplot(bfly_spring, aes(x = year, y = total_butterfly_count, color = Site)) +
+  geom_line() 
+springcounts
+
+fallcounts <- ggplot(bfly_fall, aes(x = year, y = total_butterfly_count, color = Site)) +
+  geom_line() 
+fallcounts
+
+springunique <- ggplot(bfly_spring, aes(x = year, y = Unique_butterflies, color = Site)) +
+  geom_line() 
+springunique
+
+fallunique <- ggplot(bfly_fall, aes(x = year, y = Unique_butterflies, color = Site)) +
+  geom_line() 
+fallunique
+
+
+
+
+
