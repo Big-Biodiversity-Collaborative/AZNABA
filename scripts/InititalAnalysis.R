@@ -78,8 +78,8 @@ model_spring1 = lm(log(total_butterfly_count)  ~year
                    )
 summary(model_spring1) 
 
-plot(model_spring1)
-vif(model_spring1)
+
+
 anova(model_spring1)
 springran <- ranef(model_spring1)
 dotplot(springran)
@@ -211,7 +211,11 @@ fallunique <- ggplot(bfly_fall, aes(x = year, y = Unique_butterflies, color = Si
   geom_line() 
 fallunique2 <- fallunique + xlab("Year") + ylab("Unique Butterfly Species") + 
   ggtitle("Unique Butterfly Species for Each Site (Fall)")
-fallunique
+fallunique2
+
+
+
+#test
 
 
 
