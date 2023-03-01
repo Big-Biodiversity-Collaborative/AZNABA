@@ -44,6 +44,7 @@ plot(model_fall)
 #Check out more variables need precip! ADD random ?+ (1|year)
 #90days in temp not significant
 
+#Fall model for total butterflies
 model_fall1 = lmer(log(total_butterfly_count) ~ +year
                     
                     + tmin_previous30 + 
@@ -64,7 +65,7 @@ anova(model_fall1)
 fallran <- ranef(model_fall1)
 dotplot(fallran)
 
-#spring model
+#spring model for total butterflies
 model_spring1 = lm(log(total_butterfly_count)  ~year
                    
                    + tmin_previous30 + 
