@@ -28,6 +28,8 @@ helen$Site[helen$Site=="Ramsey Canyon"]<-"RamseyCanyonAZ"
 helen$Site[helen$Site=="Sabino Canyon"]<-"SabinoCanyonAZ"
 helen$Site[helen$Site=="Santa Rita Mountains"]<-"SantaRitaMountains"
 
+#replacing the NAs in matts data to be uniform with the unidentified in helen
+matt["NABAEnglishName"][is.na(matt["NABAEnglishName"])] <-"unidentified"
 
 # Rename variables for consistent naming
 matt <- matt%>%
@@ -51,6 +53,14 @@ Az_naba_all <- Az_naba_all[!(Az_naba_all$Site == 'SantaRitaMountains' & Az_naba_
 #Removing incorrect rows for santa rita mountains 2019
 Az_naba_all <- Az_naba_all[!(Az_naba_all$Site == 'SantaRitaMountains' & Az_naba_all$Year == 2019 &
                                  Az_naba_all$PartyHours == 48.5),]
+
+
+#removing the original NABA english name column
+Az_naba_all = select(Az_naba_all, -NABAEnglishName)
+
+#renaming synced name column to naba english name as it was before
+colnames(Az_naba_all)[10] = "NABAEnglishName"
+
 #BRADLY: Add lat/long to Az_naba_all
 #Check the names in Helen's file ' 
 #??Urbanization get file from Helen
@@ -74,8 +84,10 @@ write_csv(x = az_naba_lat_long,
 #Adding climate data to the az_naba_lat_long
 climate_az_naba <- left_join(az_naba_lat_long, all_sites_climate, by=c("Year"="year", "Month"="month", "Site"="site"))
 
-#removing the duplicate lat/long from the climate file
-climate_az_naba = select(climate_az_naba, -latitude,-longitude)
+#removing the duplicate lat/long from the climate file 
+climate_az_naba = select(climate_az_naba, -latitude,-longitude,)
+
+
 
 #Creating a data file with Total unique butterfly species for each outing 
 Total_butterfly2 <- Az_naba_all %>% 
@@ -96,7 +108,7 @@ Butterfly_summary <- left_join(Total_butterfly, Total_butterfly2, by=c("Year"="Y
 write_csv(x = Butterfly_summary, 
           file = "data/Butterfly_summary.csv")
 
-#Creating a climate lag 
+#Creating a climate lag (not used)
 climate_lag <- all_sites_climate %>% 
   group_by(site) %>% 
   dplyr::mutate(tmean_previous = dplyr::lag(tmean, n = 1, default = NA))
