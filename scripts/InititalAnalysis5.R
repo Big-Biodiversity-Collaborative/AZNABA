@@ -11,6 +11,9 @@ library(readr)
 library(lattice)
 library(car)
 library(lmerTest)
+library(ggplot2)
+library(ggbreak)
+
 #Reading in the DF
 bfly_spring<- read.csv(file = "data/Spring_Analysis.csv")
 bfly_fall<-read.csv(file = "data/fall_Analysis.csv")
@@ -41,6 +44,7 @@ plot(model_fall)
 #Check out more variables need precip! ADD random ?+ (1|year)
 #90days in temp not significant
 
+#Fall model for total butterflies
 model_fall1 = lmer(log(total_butterfly_count) ~ +year
                     
                     + tmin_previous30 + 
@@ -61,7 +65,7 @@ anova(model_fall1)
 fallran <- ranef(model_fall1)
 dotplot(fallran)
 
-#spring model
+#spring model for total butterflies
 model_spring1 = lm(log(total_butterfly_count)  ~year
                    
                    + tmin_previous30 + 
@@ -75,8 +79,8 @@ model_spring1 = lm(log(total_butterfly_count)  ~year
                    )
 summary(model_spring1) 
 
-plot(model_spring1)
-vif(model_spring1)
+
+
 anova(model_spring1)
 springran <- ranef(model_spring1)
 dotplot(springran)
@@ -188,19 +192,31 @@ vif(model_fall5)
 #creating spaghetti plots for total and unique butterflies over time for each site
 springcounts <- ggplot(bfly_spring, aes(x = year, y = total_butterfly_count, color = Site)) +
   geom_line() 
-springcounts
+springcounts2 <- springcounts + xlab("Year") + ylab("Butterfly Count") + 
+  ggtitle("Total Butterfly Counts for Each Site (Spring)")
+springcounts2
 
 fallcounts <- ggplot(bfly_fall, aes(x = year, y = total_butterfly_count, color = Site)) +
   geom_line() 
-fallcounts
+fallcounts2 <- fallcounts + xlab("Year") + ylab("Butterfly Count") + 
+  ggtitle("Total Butterfly Counts for Each Site (Fall)")
+fallcounts2
 
 springunique <- ggplot(bfly_spring, aes(x = year, y = Unique_butterflies, color = Site)) +
   geom_line() 
-springunique
+springunique2 <- springunique + xlab("Year") + ylab("Unique Butterfly Species") + 
+  ggtitle("Unique Butterfly Species for Each Site (Spring)")
+springunique2
 
 fallunique <- ggplot(bfly_fall, aes(x = year, y = Unique_butterflies, color = Site)) +
   geom_line() 
-fallunique
+fallunique2 <- fallunique + xlab("Year") + ylab("Unique Butterfly Species") + 
+  ggtitle("Unique Butterfly Species for Each Site (Fall)")
+fallunique2
+
+
+
+#test
 
 
 

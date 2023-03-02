@@ -32,7 +32,7 @@ bfly_fall <- bfly_fall[!(bfly_fall$Site == 'SantaRitaMountains' & bfly_fall$mont
 bfly_fall <- bfly_fall[!(bfly_fall$Site == 'GrandCanyonNorthRim' & bfly_fall$day == 5),]
 bfly_fall <- bfly_fall[!(bfly_fall$Site == 'SycamoreCreekAZ' & bfly_fall$day == 7),]
 
-#Creating the fall data observations
+#Creating the spring data observations
 bfly_spring <- bfly_analysis %>% 
   select(year:TotalDistanceMi) %>% 
   filter(month < 7)
