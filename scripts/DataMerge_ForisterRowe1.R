@@ -12,12 +12,13 @@ library(zoo)
 library(ggplot2)
 
 # Load data and Corrects data read error with '
-matt <- read_csv(file = "data/NABA_Forister.csv")
+matt <- read_csv(file = "data/NABA_Forister_2023.03.02.csv")
 matt$NABAEnglishName <- gsub("^'|'$", "", matt$NABAEnglishName)
 
-helen <- read_csv(file = "data/NABA_Rowe.csv")
+helen <- read_csv(file = "data/NABA_Rowe_2023.03.02.csv")
 helen$NABAEnglishName <- gsub("^'|'$", "", helen$NABAEnglishName)
 helen$NABAEnglishName <- gsub("[\x82\x91\x92]", "'", helen$NABAEnglishName)
+
 
 #Renaming site names in Helen's file to be consistent with Matt and lat long files
 helen$Site[helen$Site=="McDowell Sonoran Preserve"]<-"McDowellSonoranPreserve"
@@ -28,16 +29,10 @@ helen$Site[helen$Site=="Ramsey Canyon"]<-"RamseyCanyonAZ"
 helen$Site[helen$Site=="Sabino Canyon"]<-"SabinoCanyonAZ"
 helen$Site[helen$Site=="Santa Rita Mountains"]<-"SantaRitaMountains"
 
-#replacing the NAs in matts data to be uniform with the unidentified in helen
-matt["NABAEnglishName"][is.na(matt["NABAEnglishName"])] <-"unidentified"
-
-# Rename variables for consistent naming
-matt <- matt%>%
-  rename(PartyHours=Party_Hours) 
 
 # Combine files  
-az_naba <- matt %>%
-  bind_rows(helen) 
+az_naba <- helen %>%
+  bind_rows(matt) 
  
 #Delete duplicate rows
 Az_naba_all <- az_naba %>%
@@ -58,8 +53,20 @@ Az_naba_all <- Az_naba_all[!(Az_naba_all$Site == 'SantaRitaMountains' & Az_naba_
 #removing the original NABA english name column
 Az_naba_all = select(Az_naba_all, -NABAEnglishName)
 
+#creating a duplciate az_naba_all which will be used to remove the unidentified species in the richness counts 
+Az_naba_all2 <- Az_naba_all
+
+#Removing the unidentified species
+Az_naba_all2 <- subset(Az_naba_all2, LatinAnalysisName!= 'Nymphalidae_sp')
+Az_naba_all2 <- subset(Az_naba_all2, LatinAnalysisName!= 'Lepidoptera _sp')
+Az_naba_all2 <- subset(Az_naba_all2, LatinAnalysisName!= 'Lycaenidae_sp')
+Az_naba_all2 <- subset(Az_naba_all2, LatinAnalysisName!= 'Hesperiidae_sp')
+Az_naba_all2 <- subset(Az_naba_all2, LatinAnalysisName!= 'Riodinidae_sp')
+Az_naba_all2 <- subset(Az_naba_all2, LatinAnalysisName!= 'Pieridae_sp')
+
 #renaming synced name column to naba english name as it was before
-colnames(Az_naba_all)[10] = "NABAEnglishName"
+colnames(Az_naba_all)[11] = "NABAEnglishName"
+colnames(Az_naba_all2)[11] = "NABAEnglishName"
 
 #BRADLY: Add lat/long to Az_naba_all
 #Check the names in Helen's file ' 
@@ -90,7 +97,7 @@ climate_az_naba = select(climate_az_naba, -latitude,-longitude,)
 
 
 #Creating a data file with Total unique butterfly species for each outing 
-Total_butterfly2 <- Az_naba_all %>% 
+Total_butterfly2 <- Az_naba_all2 %>% 
   select(Year, Month, Day, Site, NABAEnglishName) %>% 
   group_by(Year, Month, Day, Site) %>% 
   summarize(Unique_butterflies = n_distinct(NABAEnglishName))

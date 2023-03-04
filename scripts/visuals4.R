@@ -159,7 +159,7 @@ bfly_summary <- bfly_summary %>%
 
 #creating the spring data observations
 bfly_spring <- bfly_summary %>% 
-  select(year, month, day, Site, total_butterly_count, Unique_butterflies, date) %>% 
+  select(year, month, day, Site, total_butterfly_count, Unique_butterflies, date) %>% 
   filter(month > 6)
 
 #Removing second sampling of santarita mountains
@@ -172,7 +172,7 @@ bfly_spring <- bfly_spring[!(bfly_spring$Site == 'SycamoreCreekAZ' & bfly_spring
 
 #Creating the fall data observations
 bfly_fall <- bfly_summary %>% 
-  select(year, month, day, Site, total_butterly_count, Unique_butterflies, date) %>% 
+  select(year, month, day, Site, total_butterfly_count, Unique_butterflies, date) %>% 
   filter(month < 7)
 
 #Removing post 6/15 sampling  
