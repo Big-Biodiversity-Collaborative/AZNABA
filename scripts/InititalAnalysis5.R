@@ -13,6 +13,8 @@ library(car)
 library(lmerTest)
 library(ggplot2)
 library(ggbreak)
+library(influence.ME)
+library(olsrr)
 
 #Reading in the DF
 bfly_spring<- read.csv(file = "data/Spring_Analysis.csv")
@@ -223,9 +225,32 @@ fallunique2
 
 
 
-#test
+#Calculating cooks disctance for the 4 models
 
+#cooks distance when grouped by site for fall abundance
+fall_abun <- influence(model_fall1, group = "Site")
+x <- cooks.distance(fall_abun)
 
+#cooks distance for each individual sampling for fall abundance
+fall_abun2 <- influence(model_fall1, obs = TRUE)
+x2 <- cooks.distance(fall_abun2)
 
+#cooks distance for each individual sample for spring abundance
+spring_abun <- influence(model_spring1, obs = TRUE)
+z <- cooks.distance(model_spring1)
+ols_plot_cooksd_bar(model_spring1)
+
+#cooks distance when grouped by site for fall richness
+fall_rich <- influence(model_fall5, group = "Site")
+y <- cooks.distance(fall_rich)
+
+#cooks distance for each individual sampling for fall richness
+fall_rich2 <- influence(model_fall5, obs = TRUE)
+y2 <- cooks.distance(fall_rich2)
+
+#cooks distance for for each individual sample for spring richness
+spring_rich <- influence(model_spring5, obs = TRUE)
+z2 <- cooks.distance(model_spring5)
+ols_plot_cooksd_bar(model_spring5)
 
 
