@@ -225,6 +225,117 @@ fallunique2 <- fallunique + xlab("Year") + ylab("Unique Butterfly Species") +
 fallunique2
 
 
+#The models used
+
+#Fall model for total butterflies
+model_fall1 = lmer(log(total_butterfly_count) ~ +year
+                   
+                   + tmin_previous30 + 
+                     
+                     tmax_previous30+
+                     Mseason_precip+
+                     Wseason_precip +
+                     PartyHours +
+                     (1|Site)  ,
+                   data=bfly_fall,
+                   REML = TRUE)
+summary(model_fall1) 
+ranef(model_fall1)
+plot(model_fall1)
+vif(model_fall1)
+anova(model_fall1)
+
+fallran <- ranef(model_fall1)
+dotplot(fallran)
+
+#spring model for total butterflies
+model_spring1 = lm(log(total_butterfly_count)  ~year
+                   
+                   + tmin_previous30 + 
+                     
+                     tmax_previous30+
+                     Mseason_precip+
+                     Wseason_precip +
+                     PartyHours 
+                   ,
+                   data=bfly_spring
+)
+summary(model_spring1) 
+
+
+
+anova(model_spring1)
+springran <- ranef(model_spring1)
+dotplot(springran)
+
+#spring model for unique butterflies
+model_spring5 = lm(Unique_butterflies  ~year
+                   
+                   + tmin_previous30 + 
+                     
+                     tmax_previous30+
+                     Mseason_precip+
+                     Wseason_precip +
+                     PartyHours 
+                   ,
+                   data=bfly_spring)
+summary(model_spring5) 
+plot(model_spring5)
+
+#fall model for unique butterflies
+model_fall5 = lmer(sqrt(Unique_butterflies) ~ +year
+                   
+                   + tmin_previous30 + 
+                     
+                     tmax_previous30+
+                     Mseason_precip+
+                     Wseason_precip +
+                     PartyHours +
+                     (1|Site)  ,
+                   data=bfly_fall,
+                   REML = TRUE)
+summary(model_fall5) 
+plot(model_fall5)
+vif(model_fall5)
+
+#Fall model for total butterflies without the two grand canyon north rim samples
+model_fall12 = lmer(log(total_butterfly_count) ~ +year
+                   
+                   + tmin_previous30 + 
+                     
+                     tmax_previous30+
+                     Mseason_precip+
+                     Wseason_precip +
+                     PartyHours +
+                     (1|Site)  ,
+                   data=bfly_fall2,
+                   REML = TRUE)
+summary(model_fall12) 
+ranef(model_fall12)
+plot(model_fall12)
+vif(model_fall12)
+anova(model_fall12)
+
+fallran2 <- ranef(model_fall12)
+dotplot(fallran2)
+
+#fall model for unique butterflies without the two grand canyon north rim samples
+model_fall52 = lmer(sqrt(Unique_butterflies) ~ +year
+                   
+                   + tmin_previous30 + 
+                     
+                     tmax_previous30+
+                     Mseason_precip+
+                     Wseason_precip +
+                     PartyHours +
+                     (1|Site)  ,
+                   data=bfly_fall2,
+                   REML = TRUE)
+summary(model_fall52) 
+plot(model_fall52)
+vif(model_fall52)
+
+
 
 #Calculating cooks disctance for the 4 models
 
