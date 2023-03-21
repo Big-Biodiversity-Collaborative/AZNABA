@@ -36,7 +36,7 @@ az_naba <- helen %>%
  
 #Delete duplicate rows
 Az_naba_all <- az_naba %>%
-  distinct(Site,Year,Month,Day, tolower(gsub(x=NABAEnglishName,
+  distinct(Site,Year,Month,Day,PartyHours, tolower(gsub(x=NABAEnglishName,
                                              pattern = "-|\' ",
                                              replacement = " ")), 
            .keep_all = TRUE) 

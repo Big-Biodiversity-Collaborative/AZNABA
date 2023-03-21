@@ -71,13 +71,6 @@ party_values<- party_values[!duplicated(party_values[c("Year", "Month", "Day", "
 party_values<- party_values[!duplicated(party_values[c("Year", "Site", "PartyHours", "Total_Parties")],
                                         fromLast = TRUE),]
 
-#Removing incorrect rows for santa rita mountains 2018
-party_values <- party_values[!(party_values$Site == 'SantaRitaMountains' & party_values$Year == 2018 &
-                 party_values$PartyHours == 41.5),]
-
-#Removing incorrect rows for santa rita mountains 2019
-party_values <- party_values[!(party_values$Site == 'SantaRitaMountains' & party_values$Year == 2019 &
-                                 party_values$PartyHours == 48.5),]
 
 #joining the party variables to sampling events
 party_butterfly <- left_join(sampling_events, party_values, by=c("year"="Year", "month"="Month",

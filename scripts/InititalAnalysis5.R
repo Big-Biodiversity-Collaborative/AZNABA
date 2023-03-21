@@ -21,10 +21,11 @@ bfly_spring<- read.csv(file = "data/Spring_Analysis.csv")
 bfly_fall<-read.csv(file = "data/fall_Analysis.csv")
 View(bfly_spring)
 
-#removing the grandcanyon sampling events from the spring data set as requested
-bfly_spring <- subset(bfly_spring, Site!= 'GrandCanyonDesertView')
-bfly_spring <- subset(bfly_spring, Site!= 'GrandCanyonSouthRim')
+#removing the grand canyon sampling events from the spring data set as requested
+bfly_spring2 <- subset(bfly_spring, Site!= 'GrandCanyonDesertView')
+bfly_spring2 <- subset(bfly_spring, Site!= 'GrandCanyonSouthRim')
 
+bfly_fall2 <- subset(bfly_fall, Site!= 'GrandCanyonNorthRim')
 
 
 
