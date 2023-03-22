@@ -26,7 +26,7 @@ bfly_spring2 <- subset(bfly_spring, Site!= 'GrandCanyonDesertView')
 bfly_spring2 <- subset(bfly_spring, Site!= 'GrandCanyonSouthRim')
 
 bfly_fall2 <- subset(bfly_fall, Site!= 'GrandCanyonNorthRim')
-
+bfly_fall3 <- subset(bfly_fall, Site!= 'McDowellSonoranPreserve')
 
 
 hist(bfly_spring$total_butterfly_count)
@@ -364,5 +364,24 @@ y2 <- cooks.distance(fall_rich2)
 spring_rich <- influence(model_spring5, obs = TRUE)
 z2 <- cooks.distance(model_spring5)
 ols_plot_cooksd_bar(model_spring5)
+
+
+#testing fall abundance without MSP
+model_fall13 = lmer(log(total_butterfly_count) ~ +year
+                   
+                   + tmin_previous30 + 
+                     
+                     tmax_previous30+
+                     Mseason_precip+
+                     Wseason_precip +
+                     PartyHours +
+                     (1|Site)  ,
+                   data=bfly_fall3,
+                   REML = TRUE)
+summary(model_fall13)
+
+
+
+
 
 
