@@ -23,7 +23,7 @@ View(bfly_spring)
 
 #removing the grand canyon sampling events from the spring data set as requested
 bfly_spring2 <- subset(bfly_spring, Site!= 'GrandCanyonDesertView')
-bfly_spring2 <- subset(bfly_spring, Site!= 'GrandCanyonSouthRim')
+bfly_spring2 <- subset(bfly_spring2, Site!= 'GrandCanyonSouthRim')
 
 bfly_fall2 <- subset(bfly_fall, Site!= 'GrandCanyonNorthRim')
 bfly_fall3 <- subset(bfly_fall, Site!= 'McDowellSonoranPreserve')

@@ -65,10 +65,10 @@ party_values <- party_values %>%
 
 #Removing helen/matt duplicates where distance and observers were added
 party_values<- party_values[!duplicated(party_values[c("Year", "Month", "Day", "Site", "PartyHours", "Total_Parties")],
-                                        fromLast = TRUE),]
+                                        fromLast = FALSE),]
 
 #Removing duplicates in helen's data where I assume a copying error occurred
-party_values<- party_values[!duplicated(party_values[c("Year", "Site", "PartyHours", "Total_Parties")],
+party_values<- party_values[!duplicated(party_values[c("Year", "Month", "Day", "Site", "PartyHours", "Total_Parties")],
                                         fromLast = TRUE),]
 
 

@@ -60,7 +60,7 @@ bfly_summary <- read_csv(file = "data/Butterfly_Analysis.csv")
 
 #selecting only the needed rows
 bfly_summary <- bfly_summary %>% 
-  select(year, month, day, Site, total_butterly_count, Unique_butterflies)
+  select(year, month, day, Site, total_butterfly_count, Unique_butterflies)
 
 #combining year/month/day back into a date
 bfly_summary$date <- as.Date(with(bfly_summary, paste(year,month,day, sep = "-")), "%Y-%m-%d")
