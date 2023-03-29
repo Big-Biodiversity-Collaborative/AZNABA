@@ -364,5 +364,35 @@ write_csv(x = Final_Butterly2,
 #test
 
 
+#calculating average tmin and tmean for the spring and fall sampling periods over a 30 year time period 1991-2021
+dw <- daily_weather %>% 
+  select(year, month, day, Site, tmin, tmax) %>% 
+  filter(Site !="GuadalupeCanyonAZNM", Site!= "SpringervilleAZ")
 
+dw <- dw %>% filter(year >=1991, year <=2020)
+
+#splitting into fall and spring sampling periods 
+dws <- dw %>% 
+  select(year:tmax) %>% 
+  filter(month >=3, month <=5 )
+
+dws1 <- dw %>% 
+  select(year:tmax) %>% 
+  filter(month ==6, day <=15 )
+
+mean_spring = merge(dws, dws1, all = TRUE)
+
+dwf <- dw %>% 
+  select(year:tmax) %>% 
+  filter(month >=8, month <=10 )
+
+dwf1 <- dw %>% 
+  select(year:tmax) %>% 
+  filter(month ==7, day >=15 )
+
+mean_fall = merge(dwf, dwf1, all = TRUE)
+
+#calculating the averages for tmin and tmax for each site
+aggregate(.~Site, data = mean_fall, mean)
+aggregate(.~Site, data = mean_spring, mean)
 
