@@ -19,6 +19,10 @@ library(olsrr)
 #Reading in the DF
 bfly_spring<- read.csv(file = "data/Spring_Analysis.csv")
 bfly_fall<-read.csv(file = "data/fall_Analysis.csv")
+
+#correcting the reporting mistake for the 2021 north rim sampling event of 126 party hours should be 26
+bfly_fall["PartyHours"][bfly_fall["PartyHours"] == 126] <- 26
+
 View(bfly_spring)
 
 #removing the grand canyon sampling events from the spring data set as requested
@@ -239,7 +243,8 @@ model_fall1 = lmer(log(total_butterfly_count) ~ +year
                      (1|Site)  ,
                    data=bfly_fall,
                    REML = TRUE)
-summary(model_fall1) 
+options(scipen=999)
+summary(model_fall1)
 ranef(model_fall1)
 plot(model_fall1)
 vif(model_fall1)
@@ -383,5 +388,16 @@ summary(model_fall13)
 
 
 
-
+model_fall111 = lmer(log(total_butterfly_count) ~ +year
+                   
+                   + tmin_previous30 + 
+                     
+                     tmax_previous30+
+                     Mseason_precip+
+                     Wseason_precip +
+                     PartyHours*year +
+                     (1|Site)  ,
+                   data=bfly_fall,
+                   REML = TRUE)
+summary(model_fall111) 
 
