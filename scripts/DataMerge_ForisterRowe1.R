@@ -402,10 +402,20 @@ dwp <- dw %>%
   group_by(Site, year) %>% 
   summarise(annual_precip = sum(Precip))
 
+#calculating the standard deviation for the annual precip values
+dwp2 <- dwp %>% 
+  group_by(Site) %>% 
+  summarise_at(vars(annual_precip), list(sd=sd))
+
 dwp <- dwp %>% 
   select(Site, annual_precip) %>% 
   group_by(Site) %>% 
   summarise(avg_annual = mean(annual_precip))
 
 
+#calculating the standard deviations for fall/spring tmin/tmax
+aggregate(mean_fall$tmin, list(mean_fall$Site), FUN=sd)
+aggregate(mean_fall$tmax, list(mean_fall$Site), FUN=sd)
 
+aggregate(mean_spring$tmin, list(mean_spring$Site), FUN=sd)
+aggregate(mean_spring$tmax, list(mean_spring$Site), FUN=sd)
