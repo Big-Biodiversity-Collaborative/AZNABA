@@ -16,6 +16,7 @@ library(ggbreak)
 library(influence.ME)
 library(olsrr)
 
+
 #Reading in the DF
 bfly_spring<- read.csv(file = "data/Spring_Analysis.csv")
 bfly_fall<-read.csv(file = "data/fall_Analysis.csv")
@@ -400,4 +401,64 @@ model_fall111 = lmer(log(total_butterfly_count) ~ +year
                    data=bfly_fall,
                    REML = TRUE)
 summary(model_fall111) 
+
+
+
+
+
+
+
+
+#Creating data frames combining site abundance into a mean over the years for paper graphs
+fallab <- bfly_fall %>% 
+  select(year, total_butterfly_count) %>% 
+  group_by(year) %>% 
+  summarise(fall_avg_abundance = mean(total_butterfly_count))
+
+springab <- bfly_spring %>% 
+  select(year, total_butterfly_count) %>% 
+  group_by(year) %>% 
+  summarise(spring_avg_abundance = mean(total_butterfly_count))
+
+#Creating data frames combining site richness into a mean over the years for paper graphs
+fallri <- bfly_fall %>% 
+  select(year, Unique_butterflies) %>% 
+  group_by(year) %>% 
+  summarise(fall_avg_richness = mean(Unique_butterflies))
+
+springri <- bfly_spring %>% 
+  select(year, Unique_butterflies) %>% 
+  group_by(year) %>% 
+  summarise(spring_avg_richness = mean(Unique_butterflies))
+
+#merging the abundance data frames 
+total_ab <- left_join(fallab, springab, by="year")
+
+#merging the richness data frames
+totalri <- left_join(fallri, springri, by="year")
+
+#creating long data frames for plotting
+long_abun <- gather(total_ab, Group, myValue, -1)
+long_rich <- gather(totalri, Group, myValue, -1)
+
+
+#graphing the average abundance of the years
+ggplot(data=long_abun, aes(x=year, y=myValue, color=Group))+
+  geom_point() +
+  geom_smooth(method = "lm", se =FALSE) +
+  labs(x="Year", y="Average Abundance", title="Average Butterfly Abundance over Time") +
+  scale_color_discrete(
+  labels= c("fall_avg_abundance" = "Fall",
+            "spring_avg_abundance" = "Spring"))
+
+#graphing the average  richness of the years
+ggplot(data=long_rich, aes(x=year, y=myValue, color=Group))+
+  geom_point() +
+  geom_smooth(method = "lm", se =FALSE) +
+  labs(x="Year", y="Average Richness", title="Average Butterfly Richness over Time") +
+  scale_color_discrete(
+    labels= c("fall_avg_richness" = "Fall",
+              "spring_avg_richness" = "Spring"))
+
+
 
