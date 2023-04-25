@@ -445,8 +445,8 @@ long_rich <- gather(totalri, Group, myValue, -1)
 #graphing the average abundance of the years
 ggplot(data=long_abun, aes(x=year, y=myValue, color=Group))+
   geom_point() +
-  geom_smooth(method = "lm", se =FALSE) +
-  labs(x="Year", y="Average Abundance", title="Average Butterfly Abundance over Time") +
+  geom_smooth(method = "lm", se =TRUE) +
+  labs(x="Year", y="Average butterfly abundance", title="") +
   scale_color_discrete(
   labels= c("fall_avg_abundance" = "Fall",
             "spring_avg_abundance" = "Spring"))
@@ -454,8 +454,8 @@ ggplot(data=long_abun, aes(x=year, y=myValue, color=Group))+
 #graphing the average  richness of the years
 ggplot(data=long_rich, aes(x=year, y=myValue, color=Group))+
   geom_point() +
-  geom_smooth(method = "lm", se =FALSE) +
-  labs(x="Year", y="Average Richness", title="Average Butterfly Richness over Time") +
+  geom_smooth(method = "lm", se =TRUE) +
+  labs(x="Year", y="Average butterfly richness", title="") +
   scale_color_discrete(
     labels= c("fall_avg_richness" = "Fall",
               "spring_avg_richness" = "Spring"))
