@@ -460,5 +460,92 @@ ggplot(data=long_rich, aes(x=year, y=myValue, color=Group))+
     labels= c("fall_avg_richness" = "Fall",
               "spring_avg_richness" = "Spring"))
 
+#creating data frames for spring and fall dot plots showing abundance and richness for each site
+falldot <- bfly_fall %>% 
+  select(Site, total_butterfly_count, Unique_butterflies)
+
+springdot <- bfly_spring %>% 
+  select(Site, total_butterfly_count, Unique_butterflies)
+
+#creating plots for fall
+#fall abundance
+ggplot(falldot, aes(x=Site, y=total_butterfly_count))+
+  geom_dotplot(binaxis = 'y', binwidth = 125)+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site", y="Abundance")+
+  ylim(0,11500)
+
+#fall richness
+ggplot(falldot, aes(x=Site, y=Unique_butterflies))+
+  geom_dotplot(binaxis = 'y', binwidth = 1)+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site", y="Richness")+
+  ylim(0,105)
+
+#spring abundance
+ggplot(springdot, aes(x=Site, y=total_butterfly_count))+
+  geom_dotplot(binaxis = 'y', binwidth = 80)+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Abundance")+
+  ylim(0,4000)
+
+#spring richness
+ggplot(springdot, aes(x=Site, y=Unique_butterflies))+
+  geom_dotplot(binaxis = 'y', binwidth = 1.5)+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Richness")+
+  ylim(0,80)
+
+#fall abundance boxplot
+ggplot(falldot, aes(x=Site, y=total_butterfly_count))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Abundance")
+
+#fall richness boxplot
+ggplot(falldot, aes(x=Site, y=Unique_butterflies))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Richness")
+  
+#sping abundance boxplot  
+ggplot(springdot, aes(x=Site, y=total_butterfly_count))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Abundance")
+
+#spring richness boxplot
+ggplot(springdot, aes(x=Site, y=Unique_butterflies))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Richness")
 
 
+
+#spring model for total butterflies with no GC
+model_springGC = lm(log(total_butterfly_count)  ~year
+                   
+                   + tmin_previous30 + 
+                     
+                     tmax_previous30+
+                     Mseason_precip+
+                     Wseason_precip +
+                     PartyHours 
+                   ,
+                   data=bfly_spring2
+)
+summary(model_springGC) 
+
+#spring model for unique butterflies with no GC
+model_springGC2 = lm(log(Unique_butterflies)  ~year
+                    
+                    + tmin_previous30 + 
+                      
+                      tmax_previous30+
+                      Mseason_precip+
+                      Wseason_precip +
+                      PartyHours 
+                    ,
+                    data=bfly_spring2
+)
+summary(model_springGC2) 
