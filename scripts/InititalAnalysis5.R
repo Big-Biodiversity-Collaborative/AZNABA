@@ -467,8 +467,76 @@ falldot <- bfly_fall %>%
 springdot <- bfly_spring %>% 
   select(Site, total_butterfly_count, Unique_butterflies)
 
-#creating plots for fall
+#renaming sites for easy reading
+falldot$Site[falldot$Site=="McDowellSonoranPreserve"]<-"McDowell Sonoran Preserve"
+falldot$Site[falldot$Site=="AtascosaHighlandsAZ"]<-"Atascosa Highlands"
+falldot$Site[falldot$Site=="BoyceThompsonArboretum"]<-"Boyce Thompson Arboretum"
+falldot$Site[falldot$Site=="GrandCanyonNorthRim"]<-"Grand Canyon North Rim"
+falldot$Site[falldot$Site=="GrandCanyonSouthRim"]<-"Grand Canyon South Rim"
+falldot$Site[falldot$Site=="PatagoniaAZ"]<-"Patagonia"
+falldot$Site[falldot$Site=="PortalAZ"]<-"Portal"
+falldot$Site[falldot$Site=="RamseyCanyonAZ"]<-"Ramsey Canyon"
+falldot$Site[falldot$Site=="SabinoCanyonAZ"]<-"Sabino Canyon"
+falldot$Site[falldot$Site=="SantaRitaMountains"]<-"Santa Rita Mountains"
+falldot$Site[falldot$Site=="SycamoreCreekAZ"]<-"Sycamore Creek"
+
+#renaming spring sites for reading
+springdot$Site[springdot$Site=="McDowellSonoranPreserve"]<-"McDowell Sonoran Preserve"
+springdot$Site[springdot$Site=="GrandCanyonSouthRim"]<-"Grand Canyon South Rim"
+springdot$Site[springdot$Site=="GrandCanyonDesertView"]<-"Grand Canyon Desert View"
+springdot$Site[springdot$Site=="SabinoCanyonAZ"]<-"Sabino Canyon"
+
+
+EnglishSites<- c("Cottonwood","McDowell Sonoran Preserve","Grand Canyon Desert View", "Grand Canyon South Rim","Sycamore Creek",
+                 "Patagonia", "Ramsey Canyon","Boyce Thompson Arboretum","Grand Canyon North Rim", "Atacosa Highlands", 
+                 "Sabino Canyon", "Portal","Santa Rita Mountains")
+
+#creating organized box plots for fall
 #fall abundance
+f1 <- falldot %>% 
+  mutate(Site = fct_relevel(
+    Site,"Cottonwood","McDowell Sonoran Preserve", "Grand Canyon South Rim","Sycamore Creek",
+                  "Patagonia", "Ramsey Canyon","Boyce Thompson Arboretum","Grand Canyon North Rim", "Atascosa Highlands", 
+                  "Sabino Canyon", "Portal","Santa Rita Mountains" )) %>% 
+  ggplot(aes(x=Site, y=total_butterfly_count))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Abundance")
+
+#fall richness
+f2 <- falldot %>% 
+  mutate(Site = fct_relevel(
+    Site,"Cottonwood","McDowell Sonoran Preserve", "Grand Canyon South Rim","Sycamore Creek",
+    "Patagonia", "Ramsey Canyon","Boyce Thompson Arboretum","Grand Canyon North Rim", "Atascosa Highlands", 
+    "Sabino Canyon", "Portal","Santa Rita Mountains" )) %>% 
+  ggplot(aes(x=Site, y=Unique_butterflies))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Richness")
+
+#creating organized spring box plots
+#spring abundance
+s1 <- springdot %>% 
+  mutate(Site = fct_relevel(
+    Site,"McDowell Sonoran Preserve","Grand Canyon Desert View", "Grand Canyon South Rim",
+    "Sabino Canyon" )) %>%
+  ggplot(aes(x=Site, y=total_butterfly_count))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Abundance")
+
+#spring richness
+s2 <- springdot %>% 
+  mutate(Site = fct_relevel(
+    Site,"McDowell Sonoran Preserve","Grand Canyon Desert View", "Grand Canyon South Rim",
+    "Sabino Canyon" )) %>%
+  ggplot(aes(x=Site, y=Unique_butterflies))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Abundance")
+
+
+
 ggplot(falldot, aes(x=Site, y=total_butterfly_count))+
   geom_dotplot(binaxis = 'y', binwidth = 125)+
   theme(axis.text.x = element_text(angle = 90))+
