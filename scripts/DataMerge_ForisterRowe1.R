@@ -371,6 +371,17 @@ dw <- daily_weather %>%
 
 dw <- dw %>% filter(year >=1991, year <=2020)
 
+#yearly site precip
+yearly_precip<- dw %>% 
+  group_by(Site, year) %>% 
+  summarize(Pyear = sum(Precip))
+
+#plotting site yearly precip
+precip <- ggplot(yearly_precip, aes(x = year, y = Pyear, color = Site)) + geom_line()
+BflyPrecip <- p + xlab("Year") + ylab("Yearly Precipitation") +
+  ggtitle("Yearly Precipitation for Each Sampling Site")
+
+
 #splitting into fall and spring sampling periods 
 dws <- dw %>% 
   select(year:tmax) %>% 
