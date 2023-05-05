@@ -460,6 +460,8 @@ ggplot(data=long_rich, aes(x=year, y=myValue, color=Group))+
     labels= c("fall_avg_richness" = "Fall",
               "spring_avg_richness" = "Spring"))
 
+
+
 #creating data frames for spring and fall dot plots showing abundance and richness for each site
 falldot <- bfly_fall %>% 
   select(Site, total_butterfly_count, Unique_butterflies)
@@ -533,10 +535,54 @@ s2 <- springdot %>%
   ggplot(aes(x=Site, y=Unique_butterflies))+
   geom_boxplot()+
   theme(axis.text.x = element_text(angle = 90))+
-  labs(x="Site",y="Abundance")
+  labs(x="Site",y="Richness")
 
+#creating graphs of party hours for each site
+fallparty <- bfly_fall %>% 
+  select(year, Site, PartyHours)
 
+springparty <- bfly_spring %>% 
+  select(year, Site, PartyHours)
 
+fallparty$Site[fallparty$Site=="McDowellSonoranPreserve"]<-"McDowell Sonoran Preserve"
+fallparty$Site[fallparty$Site=="AtascosaHighlandsAZ"]<-"Atascosa Highlands"
+fallparty$Site[fallparty$Site=="BoyceThompsonArboretum"]<-"Boyce Thompson Arboretum"
+fallparty$Site[fallparty$Site=="GrandCanyonNorthRim"]<-"Grand Canyon North Rim"
+fallparty$Site[fallparty$Site=="GrandCanyonSouthRim"]<-"Grand Canyon South Rim"
+fallparty$Site[fallparty$Site=="PatagoniaAZ"]<-"Patagonia"
+fallparty$Site[fallparty$Site=="PortalAZ"]<-"Portal"
+fallparty$Site[fallparty$Site=="RamseyCanyonAZ"]<-"Ramsey Canyon"
+fallparty$Site[fallparty$Site=="SabinoCanyonAZ"]<-"Sabino Canyon"
+fallparty$Site[fallparty$Site=="SantaRitaMountains"]<-"Santa Rita Mountains"
+fallparty$Site[fallparty$Site=="SycamoreCreekAZ"]<-"Sycamore Creek"
+
+springparty$Site[springparty$Site=="McDowellSonoranPreserve"]<-"McDowell Sonoran Preserve"
+springparty$Site[springparty$Site=="GrandCanyonSouthRim"]<-"Grand Canyon South Rim"
+springparty$Site[springparty$Site=="GrandCanyonDesertView"]<-"Grand Canyon Desert View"
+springparty$Site[springparty$Site=="SabinoCanyonAZ"]<-"Sabino Canyon"
+
+#creating fall party hour box plot
+fallpartyplot <- fallparty %>% 
+  mutate(Site = fct_relevel(
+    Site,"Cottonwood","McDowell Sonoran Preserve", "Grand Canyon South Rim","Sycamore Creek",
+    "Patagonia", "Ramsey Canyon","Boyce Thompson Arboretum","Grand Canyon North Rim", "Atascosa Highlands", 
+    "Sabino Canyon", "Portal","Santa Rita Mountains" )) %>% 
+  ggplot(aes(x=Site, y=PartyHours))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Party hours")
+
+#creating spring party hour box plot
+springpartyplot <- springparty %>% 
+  mutate(Site = fct_relevel(
+    Site,"McDowell Sonoran Preserve","Grand Canyon Desert View", "Grand Canyon South Rim",
+    "Sabino Canyon" )) %>%
+  ggplot(aes(x=Site, y=PartyHours))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Party hours")
+
+#fall abundance
 ggplot(falldot, aes(x=Site, y=total_butterfly_count))+
   geom_dotplot(binaxis = 'y', binwidth = 125)+
   theme(axis.text.x = element_text(angle = 90))+
@@ -576,7 +622,7 @@ ggplot(falldot, aes(x=Site, y=Unique_butterflies))+
   theme(axis.text.x = element_text(angle = 90))+
   labs(x="Site",y="Richness")
   
-#sping abundance boxplot  
+#spring abundance boxplot  
 ggplot(springdot, aes(x=Site, y=total_butterfly_count))+
   geom_boxplot()+
   theme(axis.text.x = element_text(angle = 90))+
