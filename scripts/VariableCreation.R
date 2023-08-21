@@ -1,7 +1,7 @@
 # Variable creation for analysis of NABA/Climate data
 # Jennifer Broatch
 # jennifer.broatch@asu.edu
-# created 2022-06-07
+# created 2022-06-07 hi
 
 # Load additional packages
 library(tidyverse)
