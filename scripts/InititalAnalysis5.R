@@ -16,6 +16,7 @@ library(ggbreak)
 library(influence.ME)
 library(olsrr)
 
+
 #Reading in the DF
 bfly_spring<- read.csv(file = "data/Spring_Analysis.csv")
 bfly_fall<-read.csv(file = "data/fall_Analysis.csv")
@@ -401,3 +402,264 @@ model_fall111 = lmer(log(total_butterfly_count) ~ +year
                    REML = TRUE)
 summary(model_fall111) 
 
+
+
+
+
+
+
+
+#Creating data frames combining site abundance into a mean over the years for paper graphs
+fallab <- bfly_fall %>% 
+  select(year, total_butterfly_count) %>% 
+  group_by(year) %>% 
+  summarise(fall_avg_abundance = mean(total_butterfly_count))
+
+springab <- bfly_spring %>% 
+  select(year, total_butterfly_count) %>% 
+  group_by(year) %>% 
+  summarise(spring_avg_abundance = mean(total_butterfly_count))
+
+#Creating data frames combining site richness into a mean over the years for paper graphs
+fallri <- bfly_fall %>% 
+  select(year, Unique_butterflies) %>% 
+  group_by(year) %>% 
+  summarise(fall_avg_richness = mean(Unique_butterflies))
+
+springri <- bfly_spring %>% 
+  select(year, Unique_butterflies) %>% 
+  group_by(year) %>% 
+  summarise(spring_avg_richness = mean(Unique_butterflies))
+
+#merging the abundance data frames 
+total_ab <- left_join(fallab, springab, by="year")
+
+#merging the richness data frames
+totalri <- left_join(fallri, springri, by="year")
+
+#creating long data frames for plotting
+long_abun <- gather(total_ab, Group, myValue, -1)
+long_rich <- gather(totalri, Group, myValue, -1)
+
+
+#graphing the average abundance of the years
+ggplot(data=long_abun, aes(x=year, y=myValue, color=Group))+
+  geom_point() +
+  geom_smooth(method = "lm", se =TRUE) +
+  labs(x="Year", y="Average butterfly abundance", title="") +
+  scale_color_discrete(
+  labels= c("fall_avg_abundance" = "Fall",
+            "spring_avg_abundance" = "Spring"))
+
+#graphing the average  richness of the years
+ggplot(data=long_rich, aes(x=year, y=myValue, color=Group))+
+  geom_point() +
+  geom_smooth(method = "lm", se =TRUE) +
+  labs(x="Year", y="Average butterfly richness", title="") +
+  scale_color_discrete(
+    labels= c("fall_avg_richness" = "Fall",
+              "spring_avg_richness" = "Spring"))
+
+
+
+#creating data frames for spring and fall dot plots showing abundance and richness for each site
+falldot <- bfly_fall %>% 
+  select(Site, total_butterfly_count, Unique_butterflies)
+
+springdot <- bfly_spring %>% 
+  select(Site, total_butterfly_count, Unique_butterflies)
+
+#renaming sites for easy reading
+falldot$Site[falldot$Site=="McDowellSonoranPreserve"]<-"McDowell Sonoran Preserve"
+falldot$Site[falldot$Site=="AtascosaHighlandsAZ"]<-"Atascosa Highlands"
+falldot$Site[falldot$Site=="BoyceThompsonArboretum"]<-"Boyce Thompson Arboretum"
+falldot$Site[falldot$Site=="GrandCanyonNorthRim"]<-"Grand Canyon North Rim"
+falldot$Site[falldot$Site=="GrandCanyonSouthRim"]<-"Grand Canyon South Rim"
+falldot$Site[falldot$Site=="PatagoniaAZ"]<-"Patagonia"
+falldot$Site[falldot$Site=="PortalAZ"]<-"Portal"
+falldot$Site[falldot$Site=="RamseyCanyonAZ"]<-"Ramsey Canyon"
+falldot$Site[falldot$Site=="SabinoCanyonAZ"]<-"Sabino Canyon"
+falldot$Site[falldot$Site=="SantaRitaMountains"]<-"Santa Rita Mountains"
+falldot$Site[falldot$Site=="SycamoreCreekAZ"]<-"Sycamore Creek"
+
+#renaming spring sites for reading
+springdot$Site[springdot$Site=="McDowellSonoranPreserve"]<-"McDowell Sonoran Preserve"
+springdot$Site[springdot$Site=="GrandCanyonSouthRim"]<-"Grand Canyon South Rim"
+springdot$Site[springdot$Site=="GrandCanyonDesertView"]<-"Grand Canyon Desert View"
+springdot$Site[springdot$Site=="SabinoCanyonAZ"]<-"Sabino Canyon"
+
+
+EnglishSites<- c("Cottonwood","McDowell Sonoran Preserve","Grand Canyon Desert View", "Grand Canyon South Rim","Sycamore Creek",
+                 "Patagonia", "Ramsey Canyon","Boyce Thompson Arboretum","Grand Canyon North Rim", "Atacosa Highlands", 
+                 "Sabino Canyon", "Portal","Santa Rita Mountains")
+
+#creating organized box plots for fall
+#fall abundance
+f1 <- falldot %>% 
+  mutate(Site = fct_relevel(
+    Site,"Cottonwood","McDowell Sonoran Preserve", "Grand Canyon South Rim","Sycamore Creek",
+                  "Patagonia", "Ramsey Canyon","Boyce Thompson Arboretum","Grand Canyon North Rim", "Atascosa Highlands", 
+                  "Sabino Canyon", "Portal","Santa Rita Mountains" )) %>% 
+  ggplot(aes(x=Site, y=total_butterfly_count))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Abundance")
+
+#fall richness
+f2 <- falldot %>% 
+  mutate(Site = fct_relevel(
+    Site,"Cottonwood","McDowell Sonoran Preserve", "Grand Canyon South Rim","Sycamore Creek",
+    "Patagonia", "Ramsey Canyon","Boyce Thompson Arboretum","Grand Canyon North Rim", "Atascosa Highlands", 
+    "Sabino Canyon", "Portal","Santa Rita Mountains" )) %>% 
+  ggplot(aes(x=Site, y=Unique_butterflies))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Richness")
+
+#creating organized spring box plots
+#spring abundance
+s1 <- springdot %>% 
+  mutate(Site = fct_relevel(
+    Site,"McDowell Sonoran Preserve","Grand Canyon Desert View", "Grand Canyon South Rim",
+    "Sabino Canyon" )) %>%
+  ggplot(aes(x=Site, y=total_butterfly_count))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Abundance")
+
+#spring richness
+s2 <- springdot %>% 
+  mutate(Site = fct_relevel(
+    Site,"McDowell Sonoran Preserve","Grand Canyon Desert View", "Grand Canyon South Rim",
+    "Sabino Canyon" )) %>%
+  ggplot(aes(x=Site, y=Unique_butterflies))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Richness")
+
+#creating graphs of party hours for each site
+fallparty <- bfly_fall %>% 
+  select(year, Site, PartyHours)
+
+springparty <- bfly_spring %>% 
+  select(year, Site, PartyHours)
+
+fallparty$Site[fallparty$Site=="McDowellSonoranPreserve"]<-"McDowell Sonoran Preserve"
+fallparty$Site[fallparty$Site=="AtascosaHighlandsAZ"]<-"Atascosa Highlands"
+fallparty$Site[fallparty$Site=="BoyceThompsonArboretum"]<-"Boyce Thompson Arboretum"
+fallparty$Site[fallparty$Site=="GrandCanyonNorthRim"]<-"Grand Canyon North Rim"
+fallparty$Site[fallparty$Site=="GrandCanyonSouthRim"]<-"Grand Canyon South Rim"
+fallparty$Site[fallparty$Site=="PatagoniaAZ"]<-"Patagonia"
+fallparty$Site[fallparty$Site=="PortalAZ"]<-"Portal"
+fallparty$Site[fallparty$Site=="RamseyCanyonAZ"]<-"Ramsey Canyon"
+fallparty$Site[fallparty$Site=="SabinoCanyonAZ"]<-"Sabino Canyon"
+fallparty$Site[fallparty$Site=="SantaRitaMountains"]<-"Santa Rita Mountains"
+fallparty$Site[fallparty$Site=="SycamoreCreekAZ"]<-"Sycamore Creek"
+
+springparty$Site[springparty$Site=="McDowellSonoranPreserve"]<-"McDowell Sonoran Preserve"
+springparty$Site[springparty$Site=="GrandCanyonSouthRim"]<-"Grand Canyon South Rim"
+springparty$Site[springparty$Site=="GrandCanyonDesertView"]<-"Grand Canyon Desert View"
+springparty$Site[springparty$Site=="SabinoCanyonAZ"]<-"Sabino Canyon"
+
+#creating fall party hour box plot
+fallpartyplot <- fallparty %>% 
+  mutate(Site = fct_relevel(
+    Site,"Cottonwood","McDowell Sonoran Preserve", "Grand Canyon South Rim","Sycamore Creek",
+    "Patagonia", "Ramsey Canyon","Boyce Thompson Arboretum","Grand Canyon North Rim", "Atascosa Highlands", 
+    "Sabino Canyon", "Portal","Santa Rita Mountains" )) %>% 
+  ggplot(aes(x=Site, y=PartyHours))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Party hours")
+
+#creating spring party hour box plot
+springpartyplot <- springparty %>% 
+  mutate(Site = fct_relevel(
+    Site,"McDowell Sonoran Preserve","Grand Canyon Desert View", "Grand Canyon South Rim",
+    "Sabino Canyon" )) %>%
+  ggplot(aes(x=Site, y=PartyHours))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Party hours")
+
+#fall abundance
+ggplot(falldot, aes(x=Site, y=total_butterfly_count))+
+  geom_dotplot(binaxis = 'y', binwidth = 125)+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site", y="Abundance")+
+  ylim(0,11500)
+
+#fall richness
+ggplot(falldot, aes(x=Site, y=Unique_butterflies))+
+  geom_dotplot(binaxis = 'y', binwidth = 1)+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site", y="Richness")+
+  ylim(0,105)
+
+#spring abundance
+ggplot(springdot, aes(x=Site, y=total_butterfly_count))+
+  geom_dotplot(binaxis = 'y', binwidth = 80)+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Abundance")+
+  ylim(0,4000)
+
+#spring richness
+ggplot(springdot, aes(x=Site, y=Unique_butterflies))+
+  geom_dotplot(binaxis = 'y', binwidth = 1.5)+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Richness")+
+  ylim(0,80)
+
+#fall abundance boxplot
+ggplot(falldot, aes(x=Site, y=total_butterfly_count))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Abundance")
+
+#fall richness boxplot
+ggplot(falldot, aes(x=Site, y=Unique_butterflies))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Richness")
+  
+#spring abundance boxplot  
+ggplot(springdot, aes(x=Site, y=total_butterfly_count))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Abundance")
+
+#spring richness boxplot
+ggplot(springdot, aes(x=Site, y=Unique_butterflies))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x="Site",y="Richness")
+
+
+
+#spring model for total butterflies with no GC
+model_springGC = lm(log(total_butterfly_count)  ~year
+                   
+                   + tmin_previous30 + 
+                     
+                     tmax_previous30+
+                     Mseason_precip+
+                     Wseason_precip +
+                     PartyHours 
+                   ,
+                   data=bfly_spring2
+)
+summary(model_springGC) 
+
+#spring model for unique butterflies with no GC
+model_springGC2 = lm(log(Unique_butterflies)  ~year
+                    
+                    + tmin_previous30 + 
+                      
+                      tmax_previous30+
+                      Mseason_precip+
+                      Wseason_precip +
+                      PartyHours 
+                    ,
+                    data=bfly_spring2
+)
+summary(model_springGC2) 

@@ -371,6 +371,17 @@ dw <- daily_weather %>%
 
 dw <- dw %>% filter(year >=1991, year <=2020)
 
+#yearly site precip
+yearly_precip<- dw %>% 
+  group_by(Site, year) %>% 
+  summarize(Pyear = sum(Precip))
+
+#plotting site yearly precip
+precip <- ggplot(yearly_precip, aes(x = year, y = Pyear, color = Site)) + geom_line()
+BflyPrecip <- p + xlab("Year") + ylab("Yearly Precipitation") +
+  ggtitle("Yearly Precipitation for Each Sampling Site")
+
+
 #splitting into fall and spring sampling periods 
 dws <- dw %>% 
   select(year:tmax) %>% 
@@ -402,10 +413,51 @@ dwp <- dw %>%
   group_by(Site, year) %>% 
   summarise(annual_precip = sum(Precip))
 
+#calculating the standard deviation for the annual precip values
+dwp2 <- dwp %>% 
+  group_by(Site) %>% 
+  summarise_at(vars(annual_precip), list(sd=sd))
+
 dwp <- dwp %>% 
   select(Site, annual_precip) %>% 
   group_by(Site) %>% 
   summarise(avg_annual = mean(annual_precip))
 
+
+#calculating the standard deviations for fall/spring tmin/tmax
+aggregate(mean_fall$tmin, list(mean_fall$Site), FUN=sd)
+aggregate(mean_fall$tmax, list(mean_fall$Site), FUN=sd)
+
+aggregate(mean_spring$tmin, list(mean_spring$Site), FUN=sd)
+aggregate(mean_spring$tmax, list(mean_spring$Site), FUN=sd)
+
+
+
+#combining yearly/winter/monsoon precips
+precipitation <- left_join(yearly_precip, total_Wseason_precip, by=c("Site", "year"))
+precipitation2 <-left_join(precipitation, monsoon_precip, by=c("Site", "year"))
+precipavg <- precipitation2 %>% 
+  select(year,Pyear,Wseason_precip,Mseason_precip) %>% 
+  group_by(year) %>% 
+  summarise(avgY_precip = mean(Pyear), avgW_precip = mean(Wseason_precip), avgM_precip = mean(Mseason_precip))
+longprecip <- gather(precipavg, Group, myValue, -1)
+
+#plotting the 3 precips
+precipplot <- ggplot(longprecip, aes(x=year, y=myValue, color=Group))+
+  geom_point() +
+  geom_smooth(method = "lm", se =TRUE) +
+  labs(x="Year", y="Precipitation (mm)", title="") +
+  scale_color_discrete(
+    labels= c("avgM_precip" = "Monsoon",
+              "avgW_precip" = "Winter",
+              "avgY_precip" = "Yearly"))
+
+ggplot(data=long_rich, aes(x=year, y=myValue, color=Group))+
+  geom_point() +
+  geom_smooth(method = "lm", se =TRUE) +
+  labs(x="Year", y="Average butterfly richness", title="") +
+  scale_color_discrete(
+    labels= c("fall_avg_richness" = "Fall",
+              "spring_avg_richness" = "Spring"))
 
 
