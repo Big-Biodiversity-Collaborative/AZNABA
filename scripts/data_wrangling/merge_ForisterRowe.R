@@ -97,8 +97,8 @@ colnames(Az_naba_all2)[11] = "NABAEnglishName"
 # ??Urbanization get file from Helen
 
 # Importing in the climate and lat/long data files
-lat_long_site <- read_csv(file = "data/lat-long-site.csv")
-all_sites_climate <- read_csv("data/all-sites-climate.csv")
+lat_long_site <- read_csv(file = "data/lat_long_site.csv")
+all_sites_climate <- read_csv("data/all_sites_climate.csv")
 
 # Deleting the duplicate Portal entry
 lat_long_site <- lat_long_site %>% 
@@ -139,7 +139,7 @@ Butterfly_summary <- left_join(Total_butterfly, Total_butterfly2,
 
 # Creating a csv with the butterfly richness and abundance for each outing
 write_csv(x = Butterfly_summary, 
-          file = "data/Butterfly_summary.csv")
+          file = "data/butterfly_summary.csv")
 
 
 
@@ -216,7 +216,7 @@ write_csv(x = daily_weather,
 
 # Reading in the daily weather and butterfly summary csv
 daily_weather <- read_csv("data/daily_weather.csv")
-Butterfly_summary <- read_csv("data/Butterfly_summary.csv")
+Butterfly_summary <- read_csv("data/butterfly_summary.csv")
 
 # Create a new data frame with all the rows from daily_weather and Butterfly_Summary
 Butterly_daily_weather <- full_join(daily_weather, Butterfly_summary,

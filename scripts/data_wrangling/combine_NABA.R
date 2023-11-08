@@ -95,7 +95,7 @@ lat_long <- matt_obs %>%
 
 
 # [SAVE DATA] Site latitude and longitude combined data ---
-write_csv(x=lat_long, file = "data/lat-long-site.csv")
+write_csv(x=lat_long, file = "data/lat_long_site.csv")
 
 
 
@@ -108,7 +108,7 @@ az_naba <- matt_obs %>%
 
 
 # [SAVE DATA] Butterfly Counts ---
-write_csv(x = az_naba, file = "data/all-sites-bflies.csv")
+write_csv(x = az_naba, file = "data/all_sites_bflies.csv")
 
 # Make sure all is correct
 view(az_naba)

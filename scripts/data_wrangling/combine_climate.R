@@ -20,7 +20,7 @@ library(lubridate)
 
 
 # LOAD DATA ---
-lat_long_site <- read_csv(file = "output/lat-long-site.csv") 
+lat_long_site <- read_csv(file = "output/lat_long_site.csv") 
 
 
 
@@ -98,6 +98,6 @@ all_climate_sites <- all_climate_sites %>%
 
 # SAVE DATA ---
 write_csv(x = all_climate_sites, 
-          file = "data/all-sites-climate.csv")
+          file = "data/all_sites_climate.csv")
   
 
