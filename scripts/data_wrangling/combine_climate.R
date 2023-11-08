@@ -1,24 +1,37 @@
 # Data Cleaning of PRISM Climate Data Download
 # Kathleen L Prudic
 # klprudic@arizona.edu
-# created 2022-05-26
+# Created 2022-05-26
+# Modified 2023-11-07 (Maxine Cruz)
 
-# Load additional packages
+
+
+# LOAD PACKAGES ---
 library(tidyverse)
 library(lubridate)
+
+
+
 <<<<<<< HEAD
 
 =======
 >>>>>>> 39cd5251b65df789171244bff41b9fe55c9e6583
 
-# Load latitude and longitude site name data
-lat_long_site <- read_csv(file = "output/Lat-Long-Site.csv") 
+
+
+# LOAD DATA ---
+lat_long_site <- read_csv(file = "output/lat-long-site.csv") 
+
+
+
+# ATTAIN CLIMATE DATA FROM PRISM ---
 
 # Large dataframe that will hold climate data for all sites
 all_climate_sites <- NULL
 
 # Loop over each site
 for(i in 1:nrow(lat_long_site)){
+  
   site_name <- lat_long_site$Site[i]
   site_lat <- lat_long_site$Latitude[i]
   site_long <- lat_long_site$Longitude[i]
@@ -29,8 +42,11 @@ for(i in 1:nrow(lat_long_site)){
                          format(site_lat, nsmall = 4), "_", 
                          format(site_long, nsmall = 4), ".csv")
   climate_file <- paste0("data/Climate-Data/", climate_file)
+  
   # Check to see if there are climate data for this latitude and longitude
+  
   if(file.exists(climate_file)) {
+    
     # Load corresponding climate data for site
     # Skip metadata rows in climate data
     climate_data <- read_csv(file = climate_file, skip = 10, 
@@ -49,10 +65,17 @@ for(i in 1:nrow(lat_long_site)){
       all_climate_sites <- all_climate_sites %>%
         bind_rows(climate_data)
     }
+    
   } else {
+    
     message(paste0("climate file ", climate_file, " does not exist."))
+    
   }
 }
+
+
+
+# REORGANIZE DATA ---
 
 # Rename climate columns
 all_climate_sites <- all_climate_sites %>%
@@ -71,7 +94,10 @@ all_climate_sites <- all_climate_sites %>%
 all_climate_sites <- all_climate_sites %>%
   relocate(year, month, site, latitude, longitude, precip, tmean, tmin, tmax)
 
-# Write to file
+
+
+# SAVE DATA ---
 write_csv(x = all_climate_sites, 
           file = "data/all-sites-climate.csv")
   
+
