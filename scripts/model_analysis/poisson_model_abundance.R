@@ -19,7 +19,7 @@ library(HDInterval)
 
 
 # LOAD DATA ---
-dat <- read.csv("data/Science-Data/fourthAllSp.csv", header = T)
+dat <- read.csv("data/Forister_data/fourthAllSp.csv", header = T)
 
 
 
