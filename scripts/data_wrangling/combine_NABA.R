@@ -1,16 +1,25 @@
-# Data cleaning of western NABA to AZ NABA
+# Data Cleaning of Western NABA to AZ NABA
 # Kathleen L Prudic
 # klprudic@arizona.edu
-# created 2022-04-14
+# Created 2022-04-14
+# Modified 2023-11-07 (Maxine Cruz)
 
-# Load additional packages
+
+
+# LOAD PACKAGES ---
 library(tidyverse)
 library(lubridate)
 
-# Load data 
+
+
+# LOAD DATA ---
 matt_obs <- read_csv(file = "data/NABA-AZ-Matt.csv")
 helen_obs <- read_csv(file = "data/NABA-AZ-Helen.csv")
 helenPost2018_obs <- read_csv("data/NABA-AZ-Helenpost2018.csv")
+
+
+
+# DATA CLEANING ---
 
 # Drop data with no LatinName information
 matt_obs <- matt_obs %>%
@@ -76,15 +85,19 @@ helenPost2018_obs <- helenPost2018_obs %>%
   left_join(accepted_table, by = c("LatinName" = "SourceName")) %>%
   mutate(DataSource = "Helen")
 
-#Pull out unique latitude and longitude data
-#Combine lat and long from 3 data sets
+# Pull out unique latitude and longitude data
+# Combine lat and long from 3 data sets
 lat_long <- matt_obs %>%
   select(Latitude, Longitude, Site) %>%
   bind_rows(helen_obs %>% select(Latitude, Longitude, Site)) %>%
   distinct() 
 
-# Write site latitude and longitude combined data to file
+
+
+# [SAVE DATA] Site latitude and longitude combined data ---
 write_csv(x=lat_long, file = "data/lat-long-site.csv")
+
+
 
 # Remove columns 
 az_naba <- matt_obs %>%
@@ -92,9 +105,12 @@ az_naba <- matt_obs %>%
   bind_rows(helen_obs %>% select(Year, Month, Day, DataSource, Site, AcceptedName, ButterflyCount)) %>% 
   bind_rows(helenPost2018_obs %>% select(Year, Month, Day, DataSource, Site, AcceptedName, ButterflyCount))
   
-# Write to file
+
+
+# [SAVE DATA] Butterfly Counts ---
 write_csv(x = az_naba, file = "data/all-sites-bflies.csv")
 
+# Make sure all is correct
 view(az_naba)
 
 
