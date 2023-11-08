@@ -1,3 +1,11 @@
+# ABOUT ---
+
+# Creates the following data files:
+  # sampling_events.csv
+  # butterfly_analysis.csv
+
+
+
 # LOAD LIBRARIES ---
 library(tidyverse)
 library(lubridate)
