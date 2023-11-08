@@ -11,10 +11,10 @@
 # Adds lat/long
 
 # Creates the following data:
-  # daily_weather.csv
-  # winter_all.csv
-  # monsoon_all.csv
-  # final_butterfly.csv
+  # sites_daily_weather.csv
+  # sites_winter_precipitation.csv
+  # sites_monsoon_precipitation.csv
+  # butterfly_analysis_empty_counts.csv
 
 
 # LOAD LIBRARIES ---
@@ -97,8 +97,8 @@ colnames(Az_naba_all2)[11] = "NABAEnglishName"
 # ??Urbanization get file from Helen
 
 # Importing in the climate and lat/long data files
-lat_long_site <- read_csv(file = "data/lat_long_site.csv")
-all_sites_climate <- read_csv("data/all_sites_climate.csv")
+lat_long_site <- read_csv(file = "data/sites_lat_long.csv")
+all_sites_climate <- read_csv("data/sites_climate.csv")
 
 # Deleting the duplicate Portal entry
 lat_long_site <- lat_long_site %>% 
@@ -208,7 +208,7 @@ daily_weather <- daily_weather %>%
 
 # Creating a csv file for the daily weather data frame 
 write_csv(x = daily_weather, 
-          file = "data/daily_weather.csv")
+          file = "data/sites_daily_weather.csv")
 
 
 
@@ -295,7 +295,7 @@ total_Wseason_precip <- Wseason_precip %>%
 
 # Creating a csv of the yearly winter data
 write_csv(x = total_Wseason_precip, 
-          file = "data/winter_all.csv")
+          file = "data/sites_winter_precipitation.csv")
 
 
 
@@ -342,7 +342,7 @@ monsoon_all <- merge(x=monsoon_temp, y=monsoon_precip, by=c("Site", "year"), all
 
 # Rriting the monsoon data to csv
 write_csv(x = monsoon_all, 
-          file = "data/monsoon_all.csv")
+          file = "data/sites_monsoon_precipitation.csv")
 
 
 
@@ -399,7 +399,7 @@ Final_Butterly2 <- Final_Butterly2 %>%
 
 # Writing butterfly data to csv
 write_csv(x = Final_Butterly2, 
-          file = "data/final_butterfly.csv")
+          file = "data/butterfly_analysis_empty_counts.csv")
 
 
 

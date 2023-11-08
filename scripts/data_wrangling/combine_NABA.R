@@ -95,7 +95,7 @@ lat_long <- matt_obs %>%
 
 
 # [SAVE DATA] Site latitude and longitude combined data ---
-write_csv(x=lat_long, file = "data/lat_long_site.csv")
+write_csv(x=lat_long, file = "data/sites_lat_long.csv")
 
 
 

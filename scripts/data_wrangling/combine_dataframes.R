@@ -16,9 +16,9 @@ library(ggplot2)
 
 
 # LOAD DATA ---
-winter <- read_csv(file = "data/winter_all.csv")
-monsoon <- read_csv(file = "data/monsoon_all.csv")
-butterfly <- read_csv(file = "data/final_butterfly.csv") 
+winter <- read_csv(file = "data/sites_winter_precipitation.csv")
+monsoon <- read_csv(file = "data/sites_monsoon_precipitation.csv")
+butterfly <- read_csv(file = "data/butterfly_analysis_empty_counts.csv") 
 baseline <- read_csv(file= "data/butterfly_summary.csv")
 party_values <- read_csv(file= "data/AZNABA_lat_long.csv")
 
