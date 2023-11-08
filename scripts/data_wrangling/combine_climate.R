@@ -20,7 +20,7 @@ library(lubridate)
 
 
 # LOAD DATA ---
-lat_long_site <- read_csv(file = "output/sites_lat_long.csv") 
+lat_long_site <- read_csv(file = "data/sites_lat_long.csv") 
 
 
 
@@ -41,7 +41,7 @@ for(i in 1:nrow(lat_long_site)){
   climate_file <- paste0("PRISM_ppt_tmin_tmean_tmax_stable_4km_199701_202012_", 
                          format(site_lat, nsmall = 4), "_", 
                          format(site_long, nsmall = 4), ".csv")
-  climate_file <- paste0("data/Climate-Data/", climate_file)
+  climate_file <- paste0("data/climate_data/", climate_file)
   
   # Check to see if there are climate data for this latitude and longitude
   
