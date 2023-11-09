@@ -20,7 +20,7 @@ winter <- read_csv(file = "data/sites_winter_precipitation.csv")
 monsoon <- read_csv(file = "data/sites_monsoon_precipitation.csv")
 butterfly <- read_csv(file = "data/butterfly_analysis_empty_counts.csv") 
 baseline <- read_csv(file= "data/butterfly_summary.csv")
-party_values <- read_csv(file= "data/AZNABA_lat_long.csv")
+party_values <- read_csv(file= "data/NABA_data/AZNABA_lat_long.csv")
 
 
 

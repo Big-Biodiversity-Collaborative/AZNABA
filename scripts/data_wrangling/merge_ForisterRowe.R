@@ -31,11 +31,11 @@ library(ggplot2)
 # Corrects data read error with '
 
 # Matt Forister data
-matt <- read_csv(file = "data/NABA_Forister_2023.03.02.csv")
+matt <- read_csv(file = "data/NABA_data/NABA_Forister_2023.03.02.csv")
 matt$NABAEnglishName <- gsub("^'|'$", "", matt$NABAEnglishName)
 
 # Helen Rowe data
-helen <- read_csv(file = "data/NABA_Rowe_2023.03.02.csv")
+helen <- read_csv(file = "data/NABA_data/NABA_Rowe_2023.03.02.csv")
 helen$NABAEnglishName <- gsub("^'|'$", "", helen$NABAEnglishName)
 helen$NABAEnglishName <- gsub("[\x82\x91\x92]", "'", helen$NABAEnglishName)
 
@@ -109,7 +109,7 @@ az_naba_lat_long <- left_join(Az_naba_all, lat_long_site, by ="Site")
 
 # Creating a csv for the NABA data with the lat longs added
 write_csv(x = az_naba_lat_long, 
-          file = "data/AZNABA_lat_long.csv")
+          file = "data/NABA_data/AZNABA_lat_long.csv")
 
 # Adding climate data to the az_naba_lat_long
 climate_az_naba <- left_join(az_naba_lat_long, all_sites_climate, by=c("Year"="year", "Month"="month", "Site"="site"))
@@ -157,11 +157,11 @@ Butterfly_summary_lag <- left_join(Butterfly_summary, climate_lag, by=c("Year"="
 daily_weather <- NULL
 
 read_daily <- function(path, pattern = "*.csv") {
-  list.files(path = "data/Climate-Data/DAILY", pattern = ".csv", full.names = TRUE) %>% 
+  list.files(path = "data/climate_data/DAILY", pattern = ".csv", full.names = TRUE) %>% 
     map_df(~read.csv(., skip=10))
 }
 
-daily_weather <- read_daily('./data/Climate-Data/DAILY')
+daily_weather <- read_daily('./data/climate_data/DAILY')
 
 # Separating the date into year, month, day format
 daily_weather <- daily_weather %>%
@@ -215,7 +215,7 @@ write_csv(x = daily_weather,
 # WINTER PRECIPITATION DATA ---
 
 # Reading in the daily weather and butterfly summary csv
-daily_weather <- read_csv("data/daily_weather.csv")
+daily_weather <- read_csv("data/sites_daily_weather.csv")
 Butterfly_summary <- read_csv("data/butterfly_summary.csv")
 
 # Create a new data frame with all the rows from daily_weather and Butterfly_Summary

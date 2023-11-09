@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 21 September 2023
-# Last modified: 17 October 2023
+# Last modified: 9 November 2023
 
 
 
@@ -44,10 +44,10 @@ library(ggplot2)
 # ----- LOAD DATA -----
 
 # Site numbers, names, dates, and season sampled
-sites_df <- read.csv("data_mc/site_season_sampledates.csv")
+sites_df <- read.csv("data/figure_generation/site_season_sampledates.csv")
 
 # Butterfly, monsoons, and temperature data
-bfly_df <- read.csv("data/Butterfly_Analysis.csv")
+bfly_df <- read.csv("data/butterfly_analysis.csv")
 
 
 
@@ -136,7 +136,7 @@ bfly_predictors_df <- bfly_predictors_df[order(bfly_predictors_df$Site_Number,
                                                bfly_predictors_df$Predictor), ]
 
 # Save predictors data frame
-write.csv(bfly_predictors_df, "data_mc/predictor_values.csv")
+write.csv(bfly_predictors_df, "data/figure_generation/predictor_values.csv")
 
 
 
@@ -164,7 +164,7 @@ bfly_responses_df <- bfly_responses_df[order(bfly_responses_df$Site_Number,
                                              bfly_responses_df$Response), ]
 
 # Save response data frame
-write.csv(bfly_responses_df, "data_mc/response_values.csv")
+write.csv(bfly_responses_df, "data/figure_generation/response_values.csv")
 
 
 
@@ -191,7 +191,7 @@ bfly_df2 <- bfly_df2[order(bfly_df2$Site_Number,
                            bfly_df2$Predictor), ]
 
 # Save new data frame
-write.csv(bfly_df2, "data_mc/figure_4_data.csv")
+write.csv(bfly_df2, "data/figure_generation/figure_4_data.csv")
 
 
 

@@ -37,13 +37,13 @@ library(ggthemes)
 # ----- LOAD DATA -----
 
 # Coordinates and names of sample sites
-site_coords <- read.csv("data/lat-long-site.csv")
+site_coords <- read.csv("data/sites_lat_long.csv")
 
 # For filtering spring sample sites
-spring_data <- read.csv("data/Spring_Analysis.csv")
+spring_data <- read.csv("data/butterfly_analysis_spring.csv")
 
 # For filtering fall sample sites
-fall_data <- read.csv("data/Fall_Analysis.csv")
+fall_data <- read.csv("data/butterfly_analysis_fall.csv")
 
 
 
@@ -161,7 +161,7 @@ names(fig_df)[8] <- "Number_Times_Sampled"
 fig_df <- fig_df[order(fig_df$Site_Number), ]
 
 # Save data frame
-write_csv(fig_df, "data_mc/figure_1_data.csv")
+write_csv(fig_df, "data/figure_generation/figure_1_data.csv")
 
 # [FOR FIGURE 4: Combine number assignment column to both_szn_2]
 both_szn_2 <- merge(both_szn_2, site_coords, all.y = TRUE)
@@ -174,7 +174,7 @@ both_szn_2 <- select(both_szn_2,
 both_szn_2 <- both_szn_2[order(both_szn_2$Site_Number), ]
 
 # [FOR FIGURE 4: Save data frame]
-write_csv(both_szn_2, "data_mc/site_season_sampledates.csv")
+write_csv(both_szn_2, "data/figure_generation/site_season_sampledates.csv")
 
 
 
