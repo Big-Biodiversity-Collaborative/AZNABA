@@ -49,7 +49,7 @@ head(temp84)
 length(unique(temp84$siteYear))
 
 # Filter 10 species with the highest variance in counts - remove top 10
-var<-read.csv("varianceSpecies.csv")
+var<-read.csv("data/Forister_data/varianceSpecies.csv")
 var[order(-var$var),]                                                
 mostVariable<-c(169,262,144,211,237,193,88,141,39,245)
 length(mostVariable)
