@@ -216,7 +216,15 @@ us_map <- ggplot(all_state, aes(x = long, y = lat, group = group)) +
   xlab("Longitude") +
   ylab("Latitude") +
   theme(axis.title.x = element_text(margin = margin(t = 10), size = 12),
-        axis.title.y = element_text(margin = margin(r = 10), size = 12))
+        axis.title.y = element_text(margin = margin(r = 10), size = 12)) +
+  scalebar(data = all_state,
+           location = "bottomright",
+           dist = 500,
+           dist_unit = "km",
+           transform = TRUE,
+           model = "WGS84",
+           st.size = 3,
+           border.size = 0.5)
 
 # Save as shown on Plots
 rstudioapi::savePlotAsImage(file = "output/fig_1_us_map.png", 
@@ -302,7 +310,15 @@ az_map <- ggplot() +
         axis.title.y = element_text(margin = margin(r = 10), size = 12),
         legend.position = "right",
         legend.key = element_rect(fill = "transparent", color = "transparent"),
-        legend.title = element_text(face = "bold")) 
+        legend.title = element_text(face = "bold")) +
+  scalebar(data = az_lines,
+           location = "bottomleft",
+           dist = 100,
+           dist_unit = "km",
+           transform = TRUE,
+           model = "WGS84",
+           st.size = 3,
+           border.size = 0.5)
 
 # Save as shown on Plots
 rstudioapi::savePlotAsImage(file = "output/fig_1_attempt5.png", 
@@ -311,7 +327,7 @@ rstudioapi::savePlotAsImage(file = "output/fig_1_attempt5.png",
                             height = 546)
 
 # Combine US and AZ maps
-plot_row <- plot_grid(us_map, az_map)
+plot_row <- cowplot::plot_grid(us_map, az_map)
 
 # Save as shown on Plots
 rstudioapi::savePlotAsImage(file = "output/fig_1_us_az_map.png", 
