@@ -32,6 +32,16 @@ library(tidyverse)
 library(ggthemes)
 library(cowplot)
 
+# Using archived packages
+
+# 1) ggsn (adds symbols and scale bars to ggplot)
+
+# install.packages("https://cran.r-project.org/src/contrib/Archive/ggsn/ggsn_0.5.0.tar.gz", 
+#                  type = "source", 
+#                  repos = NULL)
+
+library(ggsn)
+
 
 
 
