@@ -574,16 +574,18 @@ p13 <- ggplot(SycamoreCreekAZ, aes(x = month)) +
 # ----- PLOT ALL ON ONE GRAPH -----
 
 plot_grid(
-  p1, p2, p3, p4, p5, p6, p7, 
-  p8, p9, p10, p11, p12, p13, NULL,
-  ncol = 7,
+  p1, p2, p3, p4, 
+  p5, p6, p7, p8, 
+  p9, p10, p11, p12, 
+  p13, NULL, NULL, NULL,
+  ncol = 4,
   align = "hv"
 )
 
 ggsave2("ombrothermics.png",
         plot = last_plot(),
         path = "output",
-        width = 20,
-        height = 10,
+        width = 45,
+        height = 30,
         units = "cm")
 
