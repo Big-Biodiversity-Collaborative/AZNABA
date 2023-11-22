@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 16 November 2023
-# Last modified: 20 November 2023
+# Last modified: 21 November 2023
 
 
 
@@ -98,7 +98,10 @@ for (i in 1:13) {
 
 
 
-# ----- PLOT OMBROTHERMAL DIAGRAMs -----
+# ----- PLOT OMBROTHERMAL DIAGRAMS (13 SITES INDIVIDUALLY) -----
+
+# Generates an ombrothermic diagram for each of the sites
+  # These are then compiled into one plot, showing all 13 graphs
 
 # 1) Atascosa Highlands
 coeff <- 4
@@ -588,4 +591,114 @@ ggsave2("ombrothermics.png",
         width = 45,
         height = 30,
         units = "cm")
+
+
+
+
+# ----- ANOTHER FIGURE: AVERAGE THE 13 SITES INTO ONE DIAGRAM -----
+
+# Figure above will be used in supplementary material
+  # Main manuscript will contain this averaged ombrothermic diagram
+
+# Roughly the same loop as above, 
+  # but modified to allow for averaging across all sites
+
+# New data frame to store values in
+vals_df <- data.frame()
+
+# L o o p
+for (i in 1:13) {
+  
+  # Get site name i (note: indexing is [row, column])
+  site_i <- site_name[i, ]
+  
+  # Total precipitation and average temperature per month per year for that site
+  site_i_vals <- weather %>%
+    filter(site == site_i) %>%
+    group_by(year, month) %>%
+    summarise(total_precip = sum(precip, na.rm = TRUE), 
+              avg_temp = mean(tmean, na.rm = TRUE))
+  
+  # Average per month across all years for each site
+  site_i_vals <- site_i_vals %>%
+    group_by(month) %>%
+    summarise(avg_precip = mean(total_precip, na.rm = TRUE),
+              avg_temp = mean(avg_temp, na.rm = TRUE))
+  
+  # Specify which site values are from
+  site_i_vals <- mutate(site_i_vals, site = site_i)
+  
+  # Add new values to existing data frame
+  vals_df <- rbind(vals_df, site_i_vals)
+  
+  # Note that site values have been appended
+  print(paste("Added to data frame:", site_i))
+  
+}
+
+# Rearrange for saving
+vals_df <- select(vals_df, 4, 1, 2, 3)
+
+# Save data frame
+write.csv(vals_df, "data/figure_generation/sites_monthly_avg_temp_precip.csv",
+          row.names = FALSE) # Suppresses random addition of X column when saving
+
+# If starting from here, load data
+vals_df <- read.csv("data/figure_generation/sites_monthly_avg_temp_precip.csv")
+
+# Average the values across all sites
+all_sites_vals <- vals_df %>%
+  group_by(month) %>%
+  summarise(avg_precip = mean(avg_precip, na.rm = TRUE),
+            avg_temp = mean(avg_temp, na.rm = TRUE))
+
+# Save data frame
+write.csv(all_sites_vals, 
+          "data/figure_generation/all_sites_monthly_avg_temp_precip.csv",
+          row.names = FALSE)
+
+
+
+
+# ----- GENERATE ANOTHER OMBROTHERMIC DIAGRAM -----
+
+# If starting from here, load data
+all_sites_vals <- read.csv("data/figure_generation/all_sites_monthly_avg_temp_precip.csv")
+
+# Plot
+coeff <- 3
+
+ggplot(all_sites_vals, aes(x = month)) +
+  geom_col(aes(y = avg_precip),
+           fill = "cornflowerblue") +
+  geom_line(aes(y = avg_temp*coeff),
+            colour = "black",
+            linewidth = 1) +
+  scale_y_continuous(
+    name = "Precipitation (mm)",
+    sec.axis = sec_axis(trans = ~./coeff,
+                        name = "Temperature (°C)")
+  ) +
+  scale_x_continuous(
+    breaks = seq_along(month.name),
+    labels = month.name
+  ) +
+  xlab("Month") +
+  theme_pander() +
+  theme(axis.title.x = element_text(margin = margin(t = 15)),
+        axis.text.x = element_text(angle = 55, 
+                                   hjust = 1),
+        axis.title.y.left = element_text(margin = margin(r = 10)),
+        axis.title.y.right = element_text(margin = margin(l = 15)),
+        plot.margin = margin(1, 1, 0.5, 1, "cm"))
+
+# Save plot
+ggsave2("all_sites_avg_ombrothermic.png",
+        plot = last_plot(),
+        path = "output",
+        width = 15,
+        height = 11,
+        units = "cm")
+
+
 
